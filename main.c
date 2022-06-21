@@ -13,7 +13,7 @@ int main(int argc, char **argv) {
 
     rootDir = argv[1];
     printf("Hello, world!\n");
-
+    printf("Buscando en %s\n", rootDir);
     find(rootDir, "*.c");
     return 0;
 }
