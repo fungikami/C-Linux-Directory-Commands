@@ -6,7 +6,7 @@ make all --print-data-base --no-builtin-variables --no-builtin-rules --question
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
-# Make data base, printed on Tue Jun 21 08:52:13 2022
+# Make data base, printed on Tue Jun 21 14:44:02 2022
 
 # Variables
 
@@ -19,7 +19,9 @@ GNOME_SHELL_SESSION_MODE = ubuntu
 # environment
 SSH_AGENT_LAUNCHER = gnome-keyring
 # environment
-VSCODE_IPC_HOOK_EXTHOST = /run/user/1000/vscode-ipc-9250dfd9-c606-4fb4-9a71-08052024276d.sock
+GJS_DEBUG_OUTPUT = stderr
+# environment
+VSCODE_IPC_HOOK_EXTHOST = /run/user/1000/vscode-ipc-aceba8d0-ac41-4f57-b850-e23985fa8597.sock
 # environment
 LC_NAME = es_VE.UTF-8
 # environment
@@ -64,8 +66,6 @@ XAUTHORITY = /run/user/1000/gdm/Xauthority
 .INCLUDE_DIRS = /usr/local/include /usr/include /usr/include
 # makefile
 MAKEFLAGS = pqrR
-# environment
-DBUS_STARTER_ADDRESS = unix:path=/run/user/1000/bus,guid=e07f1d232533769896e77ff562b1be9d
 # makefile
 CURDIR := /home/fung/Documents/CI3825 - SISTEMAS DE OPERACION I/CI3825-ProyectoI
 # environment
@@ -95,19 +95,19 @@ MAKEFILE_LIST := Makefile
 # environment
 VSCODE_VERBOSE_LOGGING = true
 # environment
-VSCODE_PID = 4499
+VSCODE_PID = 3317
 # environment
 XDG_SESSION_TYPE = x11
 # automatic
 ?D = $(patsubst %/,%,$(dir $?))
 # environment
-SESSION_MANAGER = local/fung:@/tmp/.ICE-unix/1950,unix/fung:/tmp/.ICE-unix/1950
+SESSION_MANAGER = local/fung:@/tmp/.ICE-unix/1927,unix/fung:/tmp/.ICE-unix/1927
 # automatic
 *F = $(notdir $*)
 # environment
 CHROME_DESKTOP = code-url-handler.desktop
 # environment
-DBUS_SESSION_BUS_ADDRESS = unix:path=/run/user/1000/bus,guid=e07f1d232533769896e77ff562b1be9d
+DBUS_SESSION_BUS_ADDRESS = unix:path=/run/user/1000/bus
 # automatic
 <D = $(patsubst %/,%,$(dir $<))
 # environment
@@ -122,6 +122,8 @@ SHELL = /bin/sh
 MAKECMDGOALS := all
 # environment
 XMODIFIERS = @im=ibus
+# environment
+GJS_DEBUG_TOPICS = JS ERROR;JS LOG
 # environment
 SHLVL = 0
 # environment
@@ -139,7 +141,7 @@ LC_MONETARY = es_VE.UTF-8
 # environment
 LC_TIME = es_VE.UTF-8
 # environment
-INVOCATION_ID = f2c5550e318c405a81a9a312b9bd1525
+INVOCATION_ID = 9c8d5a80e2b64541887cb3ae510e3e6f
 # environment
 VSCODE_LOG_NATIVE = false
 # environment
@@ -169,7 +171,7 @@ GIO_LAUNCHED_DESKTOP_FILE = /usr/share/applications/code.desktop
 # makefile
 .DEFAULT_GOAL := all
 # environment
-SYSTEMD_EXEC_PID = 1950
+SYSTEMD_EXEC_PID = 1946
 # environment
 DISPLAY = :0
 # environment
@@ -179,13 +181,11 @@ GTK_MODULES = gail:atk-bridge
 # default
 MAKE_VERSION := 4.3
 # environment
-MANAGERPID = 1626
-# environment
-DBUS_STARTER_BUS_TYPE = session
+MANAGERPID = 1603
 # environment
 LC_MEASUREMENT = es_VE.UTF-8
 # environment
-GIO_LAUNCHED_DESKTOP_FILE_PID = 4499
+GIO_LAUNCHED_DESKTOP_FILE_PID = 3317
 # environment
 _ = /usr/share/code/code
 # environment
@@ -197,7 +197,7 @@ CFLAGS = -ansi -Wall -pedantic
 # environment
 GPG_AGENT_INFO = /run/user/1000/gnupg/S.gpg-agent:0:1
 # environment
-JOURNAL_STREAM = 8:32726
+JOURNAL_STREAM = 8:36168
 # environment
 XDG_SESSION_CLASS = user
 # environment
@@ -229,7 +229,7 @@ GDMSESSION = ubuntu-xorg
 # environment
 LC_IDENTIFICATION = es_VE.UTF-8
 # variable set hash-table stats:
-# Load=109/1024=11%, Rehash=0, Collisions=5/144=3%
+# Load=109/1024=11%, Rehash=0, Collisions=4/144=3%
 
 # Pattern-specific Variable Values
 
@@ -237,9 +237,9 @@ LC_IDENTIFICATION = es_VE.UTF-8
 
 # Directories
 
-# . (device 66310, inode 1051639): 7 files, no impossibilities.
+# . (device 66310, inode 1051639): 10 files, no impossibilities.
 
-# 7 files, no impossibilities in 1 directories.
+# 10 files, no impossibilities in 1 directories.
 
 # Implicit Rules
 
@@ -287,17 +287,17 @@ all: ejecutable
 # Load=0/32=0%, Rehash=0, Collisions=0/5=0%
 
 # Not a target:
+ 
 main.c:
 #  Implicit rule search has been done.
- 
-#  Last modified 2022-06-20 20:58:07.935020888
+#  Last modified 2022-06-21 14:43:48.148512756
 #  File has been updated.
 #  Successfully updated.
 
 main.o: main.c
 #  Implicit rule search has not been done.
 #  Implicit/static pattern stem: ''
-#  File does not exist.
+#  Last modified 2022-06-21 11:11:32.8393685
 #  File has been updated.
 #  Needs to be updated (-q is set).
 # automatic
@@ -335,12 +335,12 @@ main.o: main.c
 
 # No general ('VPATH' variable) search path.
 
-# strcache buffers: 1 (0) / strings = 15 / storage = 123 B / avg = 8 B
-# current buf: size = 8162 B / used = 123 B / count = 15 / avg = 8 B
+# strcache buffers: 1 (0) / strings = 17 / storage = 140 B / avg = 8 B
+# current buf: size = 8162 B / used = 140 B / count = 17 / avg = 8 B
 
-# strcache performance: lookups = 28 / hit rate = 46%
+# strcache performance: lookups = 31 / hit rate = 45%
 # hash-table stats:
-# Load=15/8192=0%, Rehash=0, Collisions=0/28=0%
-# Finished Make data base on Tue Jun 21 08:52:13 2022
+# Load=17/8192=0%, Rehash=0, Collisions=0/31=0%
+# Finished Make data base on Tue Jun 21 14:44:02 2022
 
  

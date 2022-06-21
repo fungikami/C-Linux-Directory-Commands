@@ -33,7 +33,7 @@ int find(char *path, char *name) {
         fprintf(stderr, "Error al abrir el directorio %s\n", path);
         return 1;
     }
-
+    
     printf("%s\n", path);
     printf("%s\n", name);
     return 0;
