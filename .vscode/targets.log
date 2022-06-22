@@ -6,7 +6,7 @@ make all --print-data-base --no-builtin-variables --no-builtin-rules --question
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
-# Make data base, printed on Tue Jun 21 15:25:33 2022
+# Make data base, printed on Tue Jun 21 20:17:43 2022
 
 # Variables
 
@@ -21,7 +21,7 @@ GNOME_SHELL_SESSION_MODE = ubuntu
 # environment
 SSH_AGENT_LAUNCHER = gnome-keyring
 # environment
-VSCODE_IPC_HOOK_EXTHOST = /run/user/1000/vscode-ipc-6e058f24-2bb8-4836-9fe4-8742ce310dbb.sock
+VSCODE_IPC_HOOK_EXTHOST = /run/user/1000/vscode-ipc-f8347acf-7a95-4fe8-a392-0d1dcb2e88e6.sock
 # environment
 LC_NAME = es_VE.UTF-8
 # environment
@@ -187,7 +187,7 @@ DBUS_STARTER_BUS_TYPE = session
 # environment
 LC_MEASUREMENT = es_VE.UTF-8
 # environment
-GIO_LAUNCHED_DESKTOP_FILE_PID = 13171
+GIO_LAUNCHED_DESKTOP_FILE_PID = 30541
 # environment
 _ = /usr/bin/dbus-update-activation-environment
 # environment
@@ -239,9 +239,9 @@ LC_IDENTIFICATION = es_VE.UTF-8
 
 # Directories
 
-# . (device 66310, inode 1051639): 10 files, no impossibilities.
+# . (device 66310, inode 1051639): 11 files, no impossibilities.
 
-# 10 files, no impossibilities in 1 directories.
+# 11 files, no impossibilities in 1 directories.
 
 # Implicit Rules
 
@@ -280,26 +280,26 @@ clean:
 #  File has not been updated.
 
 all: ejecutable
- 
 #  Command line target.
 #  Implicit rule search has been done.
 #  File does not exist.
 #  File has been updated.
 #  Needs to be updated (-q is set).
+ 
 # variable set hash-table stats:
 # Load=0/32=0%, Rehash=0, Collisions=0/5=0%
 
 # Not a target:
 main.c:
 #  Implicit rule search has been done.
-#  Last modified 2022-06-21 15:03:51.145093925
+#  Last modified 2022-06-21 19:51:05.184113781
 #  File has been updated.
 #  Successfully updated.
 
 main.o: main.c
 #  Implicit rule search has not been done.
 #  Implicit/static pattern stem: ''
-#  Last modified 2022-06-21 11:11:32.8393685
+#  Last modified 2022-06-21 19:39:26.773541276
 #  File has been updated.
 #  Needs to be updated (-q is set).
 # automatic
@@ -337,12 +337,12 @@ main.o: main.c
 
 # No general ('VPATH' variable) search path.
 
-# strcache buffers: 1 (0) / strings = 17 / storage = 140 B / avg = 8 B
-# current buf: size = 8162 B / used = 140 B / count = 17 / avg = 8 B
+# strcache buffers: 1 (0) / strings = 18 / storage = 145 B / avg = 8 B
+# current buf: size = 8162 B / used = 145 B / count = 18 / avg = 8 B
 
-# strcache performance: lookups = 31 / hit rate = 45%
+# strcache performance: lookups = 32 / hit rate = 43%
 # hash-table stats:
-# Load=17/8192=0%, Rehash=0, Collisions=0/31=0%
-# Finished Make data base on Tue Jun 21 15:25:33 2022
+# Load=18/8192=0%, Rehash=0, Collisions=0/32=0%
+# Finished Make data base on Tue Jun 21 20:17:43 2022
 
  
