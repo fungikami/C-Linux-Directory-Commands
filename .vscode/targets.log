@@ -6,7 +6,7 @@ make all --print-data-base --no-builtin-variables --no-builtin-rules --question
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
-# Make data base, printed on Wed Jun 22 09:02:42 2022
+# Make data base, printed on Wed Jun 22 23:03:46 2022
 
 # Variables
 
@@ -19,7 +19,9 @@ GNOME_SHELL_SESSION_MODE = ubuntu
 # environment
 SSH_AGENT_LAUNCHER = gnome-keyring
 # environment
-VSCODE_IPC_HOOK_EXTHOST = /run/user/1000/vscode-ipc-cc2e04e4-5228-42db-9646-7545bb833bae.sock
+GJS_DEBUG_OUTPUT = stderr
+# environment
+VSCODE_IPC_HOOK_EXTHOST = /run/user/1000/vscode-ipc-a7c89885-81da-4b3e-8d96-60064156d8fe.sock
 # environment
 LC_NAME = es_VE.UTF-8
 # environment
@@ -64,8 +66,6 @@ XAUTHORITY = /run/user/1000/gdm/Xauthority
 .INCLUDE_DIRS = /usr/local/include /usr/include /usr/include
 # makefile
 MAKEFLAGS = pqrR
-# environment
-DBUS_STARTER_ADDRESS = unix:path=/run/user/1000/bus,guid=80cb07374c0fe15908e440e062b312b7
 # makefile
 CURDIR := /home/fung/Documents/CI3825 - SISTEMAS DE OPERACION I/CI3825-ProyectoI
 # environment
@@ -95,7 +95,7 @@ MAKEFILE_LIST := Makefile
 # environment
 VSCODE_VERBOSE_LOGGING = true
 # environment
-VSCODE_PID = 3634
+VSCODE_PID = 47423
 # environment
 XDG_SESSION_TYPE = x11
 # automatic
@@ -107,7 +107,7 @@ SESSION_MANAGER = local/fung:@/tmp/.ICE-unix/1933,unix/fung:/tmp/.ICE-unix/1933
 # environment
 CHROME_DESKTOP = code-url-handler.desktop
 # environment
-DBUS_SESSION_BUS_ADDRESS = unix:path=/run/user/1000/bus,guid=80cb07374c0fe15908e440e062b312b7
+DBUS_SESSION_BUS_ADDRESS = unix:path=/run/user/1000/bus
 # automatic
 <D = $(patsubst %/,%,$(dir $<))
 # environment
@@ -122,6 +122,8 @@ SHELL = /bin/sh
 MAKECMDGOALS := all
 # environment
 XMODIFIERS = @im=ibus
+# environment
+GJS_DEBUG_TOPICS = JS ERROR;JS LOG
 # environment
 SHLVL = 0
 # environment
@@ -139,7 +141,7 @@ LC_MONETARY = es_VE.UTF-8
 # environment
 LC_TIME = es_VE.UTF-8
 # environment
-INVOCATION_ID = 261ee4fc07754a7193bc13a60c663cf9
+INVOCATION_ID = f68d1cd0c35c41beb31557019c6f5913
 # environment
 VSCODE_LOG_NATIVE = false
 # environment
@@ -169,7 +171,7 @@ GIO_LAUNCHED_DESKTOP_FILE = /usr/share/applications/code.desktop
 # makefile
 .DEFAULT_GOAL := all
 # environment
-SYSTEMD_EXEC_PID = 1933
+SYSTEMD_EXEC_PID = 1954
 # environment
 DISPLAY = :0
 # environment
@@ -181,11 +183,9 @@ MAKE_VERSION := 4.3
 # environment
 MANAGERPID = 1614
 # environment
-DBUS_STARTER_BUS_TYPE = session
-# environment
 LC_MEASUREMENT = es_VE.UTF-8
 # environment
-GIO_LAUNCHED_DESKTOP_FILE_PID = 3634
+GIO_LAUNCHED_DESKTOP_FILE_PID = 47423
 # environment
 _ = /usr/share/code/code
 # environment
@@ -197,7 +197,7 @@ CFLAGS = -ansi -Wall -pedantic
 # environment
 GPG_AGENT_INFO = /run/user/1000/gnupg/S.gpg-agent:0:1
 # environment
-JOURNAL_STREAM = 8:35965
+JOURNAL_STREAM = 8:29571
 # environment
 XDG_SESSION_CLASS = user
 # environment
@@ -229,7 +229,7 @@ GDMSESSION = ubuntu-xorg
 # environment
 LC_IDENTIFICATION = es_VE.UTF-8
 # variable set hash-table stats:
-# Load=109/1024=11%, Rehash=0, Collisions=5/144=3%
+# Load=109/1024=11%, Rehash=0, Collisions=4/144=3%
 
 # Pattern-specific Variable Values
 
@@ -247,7 +247,28 @@ LC_IDENTIFICATION = es_VE.UTF-8
 
 # Files
 
-ejecutable: main.o
+# Not a target:
+repla.c:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+repla.o: repla.c
+ 
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 13):
+	$(CC) $(CFLAGS) -c repla.c
+
+par.o: par.c par.h
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 19):
+	$(CC) $(CFLAGS) -c par.c
+
+ejecutable: main.o lista.o par.o
 #  Implicit rule search has not been done.
 #  File does not exist.
 #  File has been updated.
@@ -255,12 +276,18 @@ ejecutable: main.o
 # variable set hash-table stats:
 # Load=0/32=0%, Rehash=0, Collisions=0/5=0%
 #  recipe to execute (from 'Makefile', line 7):
-	$(CC) $(CFLAGS) -o myutil main.o 
+	$(CC) $(CFLAGS) -o myutil main.o lista.o par.o
+
+# Not a target:
+lista.h:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
 
 # Not a target:
 Makefile:
 #  Implicit rule search has been done.
-#  Last modified 2022-06-20 20:58:38.343910584
+#  Last modified 2022-06-22 22:54:53.006576935
 #  File has been updated.
 #  Successfully updated.
 
@@ -268,11 +295,23 @@ clean:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
-#  recipe to execute (from 'Makefile', line 12):
+#  recipe to execute (from 'Makefile', line 22):
 	rm *.o myutil
 
 # Not a target:
+lista.c:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
 .DEFAULT:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+par.h:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
@@ -284,20 +323,19 @@ all: ejecutable
 #  File has been updated.
 #  Needs to be updated (-q is set).
 # variable set hash-table stats:
- 
 # Load=0/32=0%, Rehash=0, Collisions=0/5=0%
 
 # Not a target:
 main.c:
 #  Implicit rule search has been done.
-#  Last modified 2022-06-21 20:18:15.940978315
+#  Last modified 2022-06-22 21:58:51.701891412
 #  File has been updated.
 #  Successfully updated.
 
 main.o: main.c
 #  Implicit rule search has not been done.
 #  Implicit/static pattern stem: ''
-#  Last modified 2022-06-21 19:39:26.773541276
+#  File does not exist.
 #  File has been updated.
 #  Needs to be updated (-q is set).
 # automatic
@@ -320,6 +358,20 @@ main.o: main.c
 # Load=8/32=25%, Rehash=0, Collisions=2/13=15%
 #  recipe to execute (from 'Makefile', line 10):
 	$(CC) $(CFLAGS) -c main.c
+	
+
+# Not a target:
+par.c:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+lista.o: lista.c lista.h
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 16):
+	$(CC) $(CFLAGS) -c lista.c
 
 # Not a target:
 .SUFFIXES:
@@ -328,19 +380,19 @@ main.o: main.c
 #  File has not been updated.
 
 # files hash-table stats:
-# Load=8/1024=1%, Rehash=0, Collisions=0/25=0%
+# Load=16/1024=2%, Rehash=0, Collisions=0/42=0%
 # VPATH Search Paths
 
 # No 'vpath' search paths.
 
 # No general ('VPATH' variable) search path.
 
-# strcache buffers: 1 (0) / strings = 18 / storage = 145 B / avg = 8 B
-# current buf: size = 8162 B / used = 145 B / count = 18 / avg = 8 B
+# strcache buffers: 1 (0) / strings = 27 / storage = 207 B / avg = 7 B
+# current buf: size = 8162 B / used = 207 B / count = 27 / avg = 7 B
 
-# strcache performance: lookups = 32 / hit rate = 43%
+# strcache performance: lookups = 45 / hit rate = 40%
 # hash-table stats:
-# Load=18/8192=0%, Rehash=0, Collisions=0/32=0%
-# Finished Make data base on Wed Jun 22 09:02:42 2022
+# Load=27/8192=0%, Rehash=0, Collisions=0/45=0%
+# Finished Make data base on Wed Jun 22 23:03:46 2022
 
  
