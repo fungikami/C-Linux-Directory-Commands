@@ -1,4 +1,4 @@
-make --dry-run --keep-going --print-directory
+make --dry-run --always-make --keep-going --print-directory
 make: Entering directory '/home/fung/Documents/CI3825 - SISTEMAS DE OPERACION I/CI3825-ProyectoI'
 gcc -ansi -Wall -pedantic -c main.c
 make: Leaving directory '/home/fung/Documents/CI3825 - SISTEMAS DE OPERACION I/CI3825-ProyectoI'
