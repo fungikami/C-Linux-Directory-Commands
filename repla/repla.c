@@ -13,6 +13,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/stat.h>
+#include <time.h>
 #include "lista.h"
 #include "repla.h"
 
@@ -71,15 +72,15 @@ struct Nodo* extraer_palabras(char* archivo) {
  *      - cabeza: cabeza de la lista doblemente enlazada
  */
 int remplazar_palabras(char* archivo, struct Nodo* cabeza) {
-    char ch;
-    char temp_archivo[] = "tmp.txt";       
+    int ch;
+    char* temp_archivo = random_string(10);   
     FILE *ptr, *write_ptr;
 
     struct stat st;
     if (stat(archivo, &st) == -1) {
         return -1;
     }
-
+    
     ptr = fopen(archivo, "r");
     if (!ptr) {
         return -1;
@@ -133,7 +134,32 @@ int remplazar_palabras(char* archivo, struct Nodo* cabeza) {
         return -1;
     }
 
+    printf("%s\n", temp_archivo);
+    free(temp_archivo);
+
     chmod(archivo, st.st_mode);
 
     return 0;
+}
+
+/**
+ * Genera un string aleatorio de longitud dada.
+ * Parametros:
+ *      - length: longitud del string 
+ */
+char *random_string(int length) {
+    int i;
+    
+    char *string = malloc(length + 11);
+    if (!string) {
+        return NULL;
+    }
+
+    for (i = 0; i < length; i++) {
+        srand(clock());
+        string[i] = 'a' + (rand() % 26);
+    }
+    string[i] = '\0';
+    strcat(string, "-repla.tmp");
+    return string;
 }

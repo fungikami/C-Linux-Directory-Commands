@@ -1,10 +1,7 @@
-make --dry-run --always-make --keep-going --print-directory
+make --dry-run --keep-going --print-directory
 make: Entering directory '/home/fung/Documents/CI3825 - SISTEMAS DE OPERACION I/CI3825-ProyectoI'
 gcc -ansi -Wall -pedantic -c main.c
+gcc -ansi -Wall -pedantic -c utilidades.c
+gcc -ansi -Wall -pedantic -o myutil main.o utilidades.o
 make: Leaving directory '/home/fung/Documents/CI3825 - SISTEMAS DE OPERACION I/CI3825-ProyectoI'
  
-make: *** No rule to make target 'lista.c', needed by 'lista.o'.
-make: *** No rule to make target 'lista.h', needed by 'lista.o'.
-make: *** No rule to make target 'par.c', needed by 'par.o'.
-make: *** No rule to make target 'par.h', needed by 'par.o'.
-

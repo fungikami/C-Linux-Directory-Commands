@@ -11,7 +11,7 @@
     #include <stdio.h>
     #include "lista.h"
 
-    FILE* abrir_archivo(char* archivo);
+    char *random_string(int length);
     struct Nodo* extraer_palabras(char* archivo);
     int remplazar_palabras(char* archivo, struct Nodo* cabeza);
 
