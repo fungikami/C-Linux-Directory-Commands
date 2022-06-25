@@ -5,3 +5,4 @@ tyler:arepera
 Marcos:Luis
 Ana:Luisa
 Analisis:resumen
+reunión:día

@@ -1,5 +1,5 @@
 /**
- * Main.c
+ * repla.c
  * 
  * Programa que toma una lista de pares de cadenas de caracteres 
  * <cad1, cad2> de un archivo y reemplaza, en un conjunto de 

@@ -161,3 +161,46 @@ int traverseDir(char *path, char *name_to_find) {
     closedir(dir);
     return 0;
 }
+
+/**
+ * Función que invierte el contenido de un archivo
+ * 
+ * Parámetros:
+ *      path: ruta del archivo a invertir el contenido
+ * Retorno:
+ *      0 si todo fue correcto, -1 si hubo un error
+ */
+int codif(struct Args *args) {
+    char *path = args->path;
+    FILE *fp = fopen(path, "r+");
+    char inicio, fin;
+    long m, n, filesize;
+
+    /* Abre el archivo */
+    if (!fp) return -1;
+
+    /* Invierte el contenido del archivo */
+    fseek(fp, -1,  SEEK_END);
+    filesize = ftell(fp);
+
+    m = 0;
+    n = filesize / 2;
+    while (n) {
+        fseek(fp, m++, SEEK_SET);
+        inicio = fgetc(fp);
+
+        fseek(fp, -m, SEEK_END);
+        fin = fgetc(fp);
+
+        fseek(fp, -m, SEEK_END);
+        fprintf(fp, "%c", inicio);
+
+        fseek(fp, m-1, SEEK_SET);
+        fprintf(fp, "%c", fin);
+
+        n--;
+    }
+
+    fclose(fp);
+    return 0;
+}

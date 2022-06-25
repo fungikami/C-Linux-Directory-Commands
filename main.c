@@ -16,7 +16,7 @@ int main(int argc, char **argv) {
     struct Args* args;
     int lineas = 0;
     int chars = 0;
-
+    char *path;
 
     clock_t t;
     double time_taken;
@@ -39,11 +39,12 @@ int main(int argc, char **argv) {
     }
     args->path = directorioRaiz;
     args->cadena1 = string1;
-    args->cadena2 = NULL;
-    args->file = NULL;
+    args->cadena2 = argv[3];
+    args->palabras = NULL;
     args->n = 0;
+    args->to_print = 1;
 
-   /*  while () {
+    /*  while () {
         printf("myutil> ");
         scanf("%[^\n]", args->dirRaiz);
     } */
@@ -56,18 +57,25 @@ int main(int argc, char **argv) {
     printf("\nProbando ifind\n");
     traverseDir(directorioRaiz, ifind, args, 0);
 
-    /* codif(dirRaiz);
+    printf("\nProbando cfind\n");
+    traverseDir(directorioRaiz, cfind, args, 0);
 
-    wc(dirRaiz, &lineas, &chars);
+    printf("\nProbando repla\n");
+    /* Encuentra archivo de las palabras y las extrae */
+    /*  args->to_print = 0;
+    traverseDir(directorioRaiz, find, args, 0);
+    printf("%s\n", args->path); 
+    args->palabras = extraer_palabras(args->path);
+    repla(args); */
 
-    lineas = 0;
-    chars = 0;
-    t = clock();
-    count_lines_chars(dirRaiz, &lineas, &chars);
-    t = clock() - t;
-    time_taken = ((double)t)/CLOCKS_PER_SEC;
-    printf("%d lineas, %d caracteres\n", lineas, chars);
-    printf("Tiempo de ejecucion: %f segundos\n", time_taken); */
+    printf("\nProbando wc\n");
+    wc(directorioRaiz, &lineas, &chars);
+
+    printf("\nProbando codif\n");
+    traverseDir(directorioRaiz, codif, args, 0);
+
+    printf("\nProbando roll\n");
+    /* traverseDir(directorioRaiz, roll, args, 0); */
 
     return 0;
 }

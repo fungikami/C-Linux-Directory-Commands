@@ -48,7 +48,7 @@ int find(struct Args *args) {
     char *path = args->path;
     char *string = args->cadena1;
     if (strstr(path, string)) {
-        printf("%s\n", path);
+        if (args->to_print) printf("%s\n", path);
         return 1;
     }
     return 0;
@@ -82,12 +82,15 @@ int ifind(struct Args *args) {
  * Retorno:
  *      0 si no contiene la cadena, 1 si contiene la cadena
  */
-int cfind(char *path, char *string, char *string2) {
-    char *buffer;
-    int fd;
+int cfind(struct Args *args) {
+    char *path = args->path;
+    char *string = args->cadena1;
+    char *string2 = args->cadena2;
+    char buffer[BUFSIZE];
+    int fd, len;
 
     /* Verifica si path contiene el string */
-    if (strstr(path, string)) return 0;
+    if (!strstr(path, string)) return 0;
     
     /* Abre el archivo regular */
     fd = open(path, O_RDONLY);
@@ -97,19 +100,34 @@ int cfind(char *path, char *string, char *string2) {
     }
 
     /* Verifica que el contenido del archivo tenga la cadena string2 */
-    buffer = malloc(sizeof(char) * BUFSIZE);
-    if (buffer == NULL) {
-        fprintf(stderr, "Error al asignar memoria\n");
+    while ((len = read(fd, buffer, BUFSIZE)) > 0) {
+        if (strstr(buffer, string2)) {
+            printf("%s\n", path);
+            return 1;
+        }
+    }
+
+    close(fd);
+    return 0;
+}
+
+
+
+int repla(struct Args *args) {
+    /* lista_cabeza = extraer_palabras(argv[1]);
+    if (!lista_cabeza) {
+        fprintf(stderr, "Error al extraer palabras\n");
         return -1;
     }
 
-    while (read(fd, buffer, BUFSIZE) > 0) {
-        if (strstr(buffer, string2)) return 1;
-    }
-
-    free(buffer);
-
-    close(fd);
+    for (i = 2; i < argc; i++) {
+        int j = remplazar_palabras(argv[i], lista_cabeza);
+        if (j < 0) {
+            fprintf(stderr, "Error al reemplazar palabras\n");
+            return -1;
+        }
+        
+    } */
     return 0;
 }
 
@@ -134,7 +152,7 @@ int count_lines_chars(char *path, int *lines, int *chars) {
         return -1;
     }
 
-    /* Por cada caracter, cuenta cuantos saltos de líneas y caracteres hay */
+    /* Cuenta cuantos saltos de líneas y caracteres hay por cada bloque */
     while ((len = read(fd, buf, BUFSIZE)) > 0) {
         for (i = 0; i < len; i++) {
             c = buf[i];
@@ -216,80 +234,49 @@ int wc(char *path, int *cum_lines, int *cum_chars) {
 /**
  * Función que invierte el contenido de un archivo
  * 
- */
-/* int codif2(char *path) {
-    char inicio, fin;
-    int filesize;
-    int len1, len2, n;
-    int fd1 = open(path, O_RDWR);
-    int fd2 = open(path, O_RDWR);
-
-    if (fd1 == -1) return -1;
-
-    filesize = lseek(fd2, 0, SEEK_END) - 1;
-    n = filesize / 2;
-
-    while (n) {
-        read(fd1, &inicio, 1);
-        read(fd2, &fin, 1);
-
-        lseek(fd1, -1, SEEK_CUR);
-        lseek(fd2, -1, SEEK_CUR);
-
-        write(fd1, &fin, 1);
-        write(fd2, &inicio, 1);
-
-        lseek(fd2, -2, SEEK_CUR);
-
-        n--;
-    }
-
-    close(fd1);
-    return 0;
-}  */
-
-/**
- * Función que invierte el contenido de un archivo
- * 
  * Parámetros:
  *      path: ruta del archivo a invertir el contenido
  * Retorno:
  *      0 si todo fue correcto, -1 si hubo un error
  */
-int codif(char *path) {
-    FILE *fp1;
-    char inicio, fin;
+int codif(struct Args *args) {
+    char *path = args->path;
+    int izq, der;
+    int fd = open(path, O_RDWR);
     long m, n, filesize;
 
     /* Abre el archivo */
-    fp1 = fopen(path, "r+");
-    if (!fp1) return -1;
+    if (fd == -1) return -1;
 
-    /* Invierte el contenido del archivo */
-    fseek(fp1, -1,  SEEK_END);
-    filesize = ftell(fp1);
+    filesize = lseek(fd, -1, SEEK_END);
+    lseek(fd, 0, SEEK_SET);
 
     m = 0;
     n = filesize / 2;
     while (n) {
-        fseek(fp1, m++, SEEK_SET);
-        inicio = fgetc(fp1);
+        /* Lee el caracter más izquierdo a intercambiar */
+        lseek(fd, m++, SEEK_SET);
+        read(fd, &izq, 1);
 
-        fseek(fp1, -m, SEEK_END);
-        fin = fgetc(fp1);
+        /* Lee el caracter más derecho a intercambiar */
+        lseek(fd, -m, SEEK_END);
+        read(fd, &der, 1);
 
-        fseek(fp1, -m, SEEK_END);
-        fprintf(fp1, "%c", inicio);
+        /* Escribe el caracter más derecho en la izquierda*/
+        lseek(fd, -m, SEEK_END);
+        write(fd, &izq, 1);
 
-        fseek(fp1, m-1, SEEK_SET);
-        fprintf(fp1, "%c", fin);
+        /* Escribe el caracter más izquierdo en la derecha*/
+        lseek(fd, m-1, SEEK_SET);
+        write(fd, &der, 1);
 
         n--;
     }
 
-    fclose(fp1);
+    /* Cierra el archivo */
+    close(fd);
     return 0;
-}
+} 
 
 /**
  * Función que rota n caracteres el contenido de un archivo
@@ -297,7 +284,7 @@ int codif(char *path) {
  * Si n es negativo, rota hacia la izquierda
  * 
  */
-/* int roll(char *path, int n) {
+int roll(char *path, int n) {
     int fd = open(path, O_RDONLY);
     int lines = 0;
     int chars = 0;
@@ -305,7 +292,7 @@ int codif(char *path) {
 
     close(fd);
     return 0;
-} */
+}
 
 
 /**
@@ -315,7 +302,8 @@ int codif(char *path) {
  *      fun: función a ejecutar por cada archivo
  *      args: argumentos para la función
  *      action_to_dir: indica si la función a ejecutar es para un directorio o un archivo
- *
+ * Retorno:
+ *      0 si todo fue correcto, -1 si hubo un error
  */
 int traverseDir(char* path, int (*fun) (struct Args* argum), struct Args* argum, int action_to_dir) {
     DIR* dir;

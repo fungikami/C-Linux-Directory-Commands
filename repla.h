@@ -14,5 +14,4 @@
     char *random_string(int length);
     struct Nodo* extraer_palabras(char* archivo);
     int remplazar_palabras(char* archivo, struct Nodo* cabeza);
-
 #endif
