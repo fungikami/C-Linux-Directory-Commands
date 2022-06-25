@@ -12,7 +12,7 @@
     int is_reg_file(char *path);
     int traverseDir(char *path, char *name);
     void find(char *path, char *name);
-    int ifind(char *path, char *name);
+    void ifind(char *path, char *name);
     int codif(char *path);
     int codif2(char *path);
     int wc(char *path, int *lines, int *chars);

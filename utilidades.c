@@ -110,43 +110,10 @@ void find(char *path, char *name) {
     }
 }
 
-int ifind(char *path, char *name) {
-    char *path_to_compare = path;
-    char *name_to_compare = name;
-    char *newName, *newPath;
-    int i;
-
-    /* Convertimos el nombre a buscar en minuscula */
-    newName = malloc(strlen(name) + 1);
-    if (newName == NULL) {
-        fprintf(stderr, "Error al asignar memoria\n");
-        return -1;
+void ifind(char *path, char *name) {
+    if (strcasestr(path, name)) {
+        printf("%s\n", path);
     }
-    strcpy(newName, name);
-    for (i = 0; i < strlen(newName); i++) {
-        newName[i] = toupper(newName[i]);
-    }
-    name_to_compare = newName;
-
-    /* Convertimos el nombre del archivo en minuscula */
-    newPath = malloc(strlen(path) + 1);
-    if (newPath == NULL) {
-        fprintf(stderr, "Error al asignar memoria\n");
-        return -1;
-    }
-    strcpy(newPath, path);
-    for (i = 0; i < strlen(newPath); i++) {
-        newPath[i] = toupper(newPath[i]);
-    }
-    path_to_compare = newPath;
-
-    /* Llamamos find con el nuevo nombre de archivo y nombre */
-    find(path_to_compare, name_to_compare);
-
-    free(newName);
-    free(newPath);
-
-    return 0;
 }
 
 int cfind(char *path, char *string, char *string2) {
