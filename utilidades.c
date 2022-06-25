@@ -4,7 +4,8 @@
  * Autor: Ka Fung (1810492)
  * Fecha: 08/07/2020 
  */
-
+ 
+#define _GNU_SOURCE
 #include <stdio.h>
 #include <stdlib.h> 
 #include <string.h>
@@ -13,6 +14,7 @@
 #include <unistd.h>
 #include <dirent.h>
 #include <sys/stat.h>
+#include "utilidades.h"
 
 #define BUFSIZE 4096
 
@@ -21,6 +23,8 @@
  * 
  * Parámetros:
  *      path: ruta del archivo
+ * Retorno:
+ *      No nulo si el archivo es un directorio, NULL en caso contrario
  */
 int is_dir_file(char *path) {
     struct stat st;
@@ -28,102 +32,62 @@ int is_dir_file(char *path) {
         fprintf(stderr, "No se pudo aplicar stat sobre el archivo %s\n", path);
         return -1;
     }
-
     return S_ISDIR(st.st_mode);
 }
 
 /**
- * Funcion que determina si un archivo es regular
+ * Función que revisa si el nombre del archivo contiene una cadena dada (case sensitive).
  * 
  * Parámetros:
  *      path: ruta del archivo
- */
-/* int is_reg_file(char *path) {
-    struct stat st;
-    if (stat(path, &st) == -1) {
-        fprintf(stderr, "No se pudo aplicar stat sobre el archivo %s\n", path);
-        return -1;
-    }
-
-    return S_ISREG(st.st_mode);
-} */
-
-/**
- * Función que recorre recursivamente 
- * 
- * Parámetros:
- *      path: ruta del directorio
- *      name_to_find: nombre del archivo 
+ *      string: cadena a buscar
  * Retorno:
- *
+ *      0 si no contiene la cadena, 1 si contiene la cadena
  */
-int traverseDir(char *path, char *name_to_find) {
-    DIR* dir;
-    struct dirent* ent;
-
-    /* Si no existe el directorio */
-    if (!(dir = opendir(path))) {
-        fprintf(stderr, "Error al abrir el directorio %s\n", path);
-        return -1;
-    } 
-    
-    while ((ent = readdir(dir))) {
-        char* e_name = ent->d_name;
-        int dots = strcmp(e_name, ".") == 0 || strcmp(e_name, "..") == 0;
-
-        /* Concatena la nueva direccion */
-        char* new_path = malloc(strlen(path) + strlen(e_name) + 2);
-        strcpy(new_path, path);
-        strcat(new_path, "/");
-        strcat(new_path, e_name);
-
-        if (!dots) {
-            int is_dir = is_dir_file(new_path);
-            if (is_dir == -1) {
-                return -1;
-            }
-
-            /* Si es un directorio, sigue recorriendo */
-            if (is_dir) {
-                int status = traverseDir(new_path, name_to_find);
-                if (status == -1) {
-                    return -1;
-                }
-            } else {
-                /* Si es un archivo, REALIZAR ACCIÓN */
-                if (strstr(e_name, name_to_find)) {
-                    printf("%s\n", new_path);
-                }
-            }
-        }
-        free(new_path);
+int find(struct Args *args) {
+    char *path = args->path;
+    char *string = args->cadena1;
+    if (strstr(path, string)) {
+        printf("%s\n", path);
+        return 1;
     }
-
-    closedir(dir);
     return 0;
 }
 
-
-void find(char *path, char *name) {
-    if (strstr(path, name)) {
+/**
+ * Función que revisa si el nombre del archivo contiene una cadena dada (case insensitive).
+ * 
+ * Parámetros:
+ *      path: ruta del archivo
+ *      string: cadena a buscar
+ * Retorno:
+ *      0 si no contiene la cadena, 1 si contiene la cadena
+ */
+int ifind(struct Args *args) {
+    char *path = args->path;
+    char *string = args->cadena1;
+    if (strcasestr(path, string)) {
         printf("%s\n", path);
+        return 1;
     }
+    return 0;
 }
 
-void ifind(char *path, char *name) {
-    if (strcasestr(path, name)) {
-        printf("%s\n", path);
-    }
-}
-
+/**
+ * Función que revisa si el nombre del archivo contiene una cadena dada (case sensitive).
+ * y si el contenido contiene string2.
+ * Parámetros:
+ *      path: ruta del archivo
+ *      string: cadena a buscar
+ * Retorno:
+ *      0 si no contiene la cadena, 1 si contiene la cadena
+ */
 int cfind(char *path, char *string, char *string2) {
     char *buffer;
     int fd;
 
-    /* Si el nombre del archivo no tiene la cadena string */
-    if (strstr(path, string) == NULL) {
-        return 0;
-    }
+    /* Verifica si path contiene el string */
+    if (strstr(path, string)) return 0;
     
     /* Abre el archivo regular */
     fd = open(path, O_RDONLY);
@@ -140,9 +104,7 @@ int cfind(char *path, char *string, char *string2) {
     }
 
     while (read(fd, buffer, BUFSIZE) > 0) {
-        if (strstr(buffer, string2)) {
-            printf("%s\n", path);
-        }
+        if (strstr(buffer, string2)) return 1;
     }
 
     free(buffer);
@@ -161,28 +123,9 @@ int cfind(char *path, char *string, char *string2) {
  * Retorno:
  *      0 si todo fue correcto, -1 si hubo un error
  */
-int wc(char *path, int *lines, int *chars) {
-    FILE *ptr = fopen(path, "r");
-    char c;
-
-    if (!ptr) {
-        return -1;
-    }
-
-    while (fread(&c, 1, 1, ptr) > 0) {
-        if (c == '\n') {
-            (*lines)++;
-        }
-        (*chars)++;
-    }
-
-    fclose(ptr);
-
-    return 0;
-}
-
-int wc2(char *path, int *lines, int *chars) {
-    char c;
+int count_lines_chars(char *path, int *lines, int *chars) {
+    char c, buf[BUFSIZE];
+    int len, i;
     int fd = open(path, O_RDONLY);
 
     /* Abre el archivo */
@@ -192,14 +135,81 @@ int wc2(char *path, int *lines, int *chars) {
     }
 
     /* Por cada caracter, cuenta cuantos saltos de líneas y caracteres hay */
-    while (read(fd, &c, 1) > 0) {
-        if (c == '\n') {
-            (*lines)++;
+    while ((len = read(fd, buf, BUFSIZE)) > 0) {
+        for (i = 0; i < len; i++) {
+            c = buf[i];
+            if (c == '\n') {
+                (*lines)++;
+            }
+            (*chars)++;
         }
-        (*chars)++;
     }
 
+    /* Cierra el archivo */
     close(fd);
+    return 0;
+}
+
+/**
+ * Función que cuenta el total de lineas y caracteres de un archivo
+ * 
+ * Parámetros:
+ *      path: ruta del archivo
+ *      cum_lines: puntero a la variable que almacena el número acumulado de lineas
+ *      cum_chars: puntero a la variable que almacena el número acumulado de caracteres
+ * Retorno:
+ *      0 si todo fue correcto, -1 si hubo un error
+ */
+int wc(char *path, int *cum_lines, int *cum_chars) {
+    DIR* dir;
+    struct dirent* ent;
+    int lines = 0, chars = 0;
+
+    /* Verifica que existe el directorio */
+    if (!(dir = opendir(path))) {
+        fprintf(stderr, "Error al abrir el directorio %s\n", path);
+        return -1;
+    } 
+    
+    /* Recorre recursivamente por cada directorio */
+    while ((ent = readdir(dir))) {
+        char* e_name = ent->d_name;
+        int dots = strcmp(e_name, ".") == 0 || strcmp(e_name, "..") == 0;
+
+        /* Concatena la nueva direccion */
+        char* new_path = malloc(strlen(path) + strlen(e_name) + 2);
+        strcpy(new_path, path);
+        strcat(new_path, "/");
+        strcat(new_path, e_name);
+
+        /* Si no se trata de una dirección con puntos, se revisa su contenido*/
+        if (!dots) {
+            int is_dir = is_dir_file(new_path);
+            if (is_dir == -1) return -1;
+
+            if (is_dir) {
+                /* Si es un directorio, sigue recorriendo */
+                int status = wc(new_path, cum_lines, cum_chars);
+                if (status == -1) return -1;
+                lines += *cum_lines;
+                chars += *cum_chars;
+            } else {
+                /* Si es un archivo regular, cuenta el número de líneas y caracteres */
+                if (count_lines_chars(new_path, &lines, &chars) == -1) return -1;
+            }
+        }
+
+        free(new_path);
+    }
+    
+    /* Imprime el número de líneas y caracteres del directorio actual */
+    printf("El directorio %s: %d líneas y %d caracteres\n", path, lines, chars);
+    
+    /* Actualiza el número acumulado de líneas */
+    (*cum_lines) = lines;
+    (*cum_chars) = chars;
+
+    closedir(dir);
     return 0;
 }
 
@@ -207,17 +217,15 @@ int wc2(char *path, int *lines, int *chars) {
  * Función que invierte el contenido de un archivo
  * 
  */
-int codif(char *path) {
+/* int codif2(char *path) {
     char inicio, fin;
     int filesize;
     int len1, len2, n;
     int fd1 = open(path, O_RDWR);
     int fd2 = open(path, O_RDWR);
 
-    /* Abre el archivo */
     if (fd1 == -1) return -1;
 
-    /* Invierte el contenido del archivo */
     filesize = lseek(fd2, 0, SEEK_END) - 1;
     n = filesize / 2;
 
@@ -238,7 +246,7 @@ int codif(char *path) {
 
     close(fd1);
     return 0;
-} 
+}  */
 
 /**
  * Función que invierte el contenido de un archivo
@@ -248,7 +256,7 @@ int codif(char *path) {
  * Retorno:
  *      0 si todo fue correcto, -1 si hubo un error
  */
-int codif2(char *path) {
+int codif(char *path) {
     FILE *fp1;
     char inicio, fin;
     long m, n, filesize;
@@ -280,7 +288,6 @@ int codif2(char *path) {
     }
 
     fclose(fp1);
-
     return 0;
 }
 
@@ -290,12 +297,65 @@ int codif2(char *path) {
  * Si n es negativo, rota hacia la izquierda
  * 
  */
-int roll(char *path, int n) {
+/* int roll(char *path, int n) {
     int fd = open(path, O_RDONLY);
     int lines = 0;
     int chars = 0;
     char c;
 
     close(fd);
+    return 0;
+} */
+
+
+/**
+ * Función que recorre recursivamente 
+ * 
+ * Parámetros:
+ *      fun: función a ejecutar por cada archivo
+ *      args: argumentos para la función
+ *      action_to_dir: indica si la función a ejecutar es para un directorio o un archivo
+ *
+ */
+int traverseDir(char* path, int (*fun) (struct Args* argum), struct Args* argum, int action_to_dir) {
+    DIR* dir;
+    struct dirent* ent;
+
+    /* Verifica que existe el directorio */
+    if (!(dir = opendir(path))) {
+        fprintf(stderr, "Error al abrir el directorio %s\n", path);
+        return -1;
+    } 
+    
+    while ((ent = readdir(dir))) {
+        char* e_name = ent->d_name;
+        int dots = strcmp(e_name, ".") == 0 || strcmp(e_name, "..") == 0;
+
+        /* Concatena la nueva direccion */
+        char* new_path = malloc(strlen(path) + strlen(e_name) + 2);
+        strcpy(new_path, path);
+        strcat(new_path, "/");
+        strcat(new_path, e_name);
+
+        /* Recorre recursivamente por cada directorio */
+        if (!dots) {
+            int is_dir = is_dir_file(new_path);
+            if (is_dir == -1) return -1;
+
+            /* Si es un directorio, sigue recorriendo */
+            if (is_dir) {
+                if (traverseDir(new_path, fun, argum, action_to_dir) == -1) return -1;
+            } else {
+                /* Si es un archivo regular,  */
+                if (action_to_dir == 0) {
+                    argum->path = new_path;
+                    if (fun(argum) == -1) return -1;
+                }
+            }
+        }
+        free(new_path);
+    }
+
+    closedir(dir);
     return 0;
 }
