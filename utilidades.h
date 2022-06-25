@@ -24,5 +24,5 @@
     int codif2(char *path);
     int count_lines_chars(char *path, int *lines, int *chars);
     int wc(char *path, int *nlines, int *nchars);
-    int traverseDir();
+    int traverseDir(char* path, int (*fun) (struct Args* argum), struct Args* argum, int action_to_dir);
 #endif
