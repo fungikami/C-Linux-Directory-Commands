@@ -6,7 +6,7 @@ make all --print-data-base --no-builtin-variables --no-builtin-rules --question
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
-# Make data base, printed on Fri Jun 24 16:37:32 2022
+# Make data base, printed on Fri Jun 24 23:18:51 2022
 
 # Variables
 
@@ -49,7 +49,6 @@ XDG_DATA_DIRS = /usr/share/ubuntu-xorg:/usr/share/gnome:/home/fung/.local/share/
 # automatic
 ^D = $(patsubst %/,%,$(dir $^))
 # environment
- 
 VSCODE_LOG_STACK = false
 # automatic
 %F = $(notdir $%)
@@ -59,6 +58,7 @@ VSCODE_CODE_CACHE_PATH = /home/fung/.config/Code/CachedData/30d9c6cd9483b2cc5866
 LANG = C
 # environment
 XAUTHORITY = /run/user/1000/gdm/Xauthority
+ 
 # default
 .LOADED := 
 # default
@@ -194,7 +194,7 @@ LC_PAPER = es_VE.UTF-8
 # environment
 XDG_RUNTIME_DIR = /run/user/1000
 # makefile (from 'Makefile', line 2)
-CFLAGS = -ansi -Wall -pedantic
+CFLAGS = -ansi -Wall -pedantic -g
 # environment
 GPG_AGENT_INFO = /run/user/1000/gnupg/S.gpg-agent:0:1
 # environment
@@ -238,9 +238,9 @@ LC_IDENTIFICATION = es_VE.UTF-8
 
 # Directories
 
-# . (device 66310, inode 1051639): 17 files, no impossibilities.
+# . (device 66310, inode 1051639): 19 files, no impossibilities.
 
-# 17 files, no impossibilities in 1 directories.
+# 19 files, no impossibilities in 1 directories.
 
 # Implicit Rules
 
@@ -250,18 +250,35 @@ LC_IDENTIFICATION = es_VE.UTF-8
 
 ejecutable: main.o utilidades.o
 #  Implicit rule search has not been done.
+#  Implicit/static pattern stem: ''
 #  File does not exist.
 #  File has been updated.
 #  Needs to be updated (-q is set).
+# automatic
+# @ := ejecutable
+# automatic
+# * := 
+# automatic
+# < := main.o
+# automatic
+# + := main.o utilidades.o
+# automatic
+# % := 
+# automatic
+# ^ := main.o utilidades.o
+# automatic
+# ? := main.o utilidades.o
+# automatic
+# | := 
 # variable set hash-table stats:
-# Load=0/32=0%, Rehash=0, Collisions=0/5=0%
+# Load=8/32=25%, Rehash=0, Collisions=2/13=15%
 #  recipe to execute (from 'Makefile', line 7):
 	$(CC) $(CFLAGS) -o myutil main.o utilidades.o
 
 # Not a target:
 Makefile:
 #  Implicit rule search has been done.
-#  Last modified 2022-06-24 16:37:29.497610411
+#  Last modified 2022-06-24 23:14:42.263506973
 #  File has been updated.
 #  Successfully updated.
 
@@ -274,16 +291,18 @@ clean:
 
 utilidades.o: utilidades.c
 #  Implicit rule search has not been done.
-#  Modification time never checked.
-#  File has not been updated.
+#  Last modified 2022-06-24 23:16:26.418060367
+#  File has been updated.
+#  Successfully updated.
 #  recipe to execute (from 'Makefile', line 13):
 	$(CC) $(CFLAGS) -c utilidades.c
 
 # Not a target:
 utilidades.c:
-#  Implicit rule search has not been done.
-#  Modification time never checked.
-#  File has not been updated.
+#  Implicit rule search has been done.
+#  Last modified 2022-06-24 23:12:44.64027327
+#  File has been updated.
+#  Successfully updated.
 
 # Not a target:
 .DEFAULT:
@@ -303,34 +322,16 @@ all: ejecutable
 # Not a target:
 main.c:
 #  Implicit rule search has been done.
-#  Last modified 2022-06-24 16:37:32.009783721
+#  Last modified 2022-06-24 22:11:04.206721594
 #  File has been updated.
 #  Successfully updated.
 
 main.o: main.c
 #  Implicit rule search has not been done.
-#  Implicit/static pattern stem: ''
-#  Last modified 2022-06-24 16:10:36.651443041
+ 
+#  Last modified 2022-06-24 23:16:26.378059435
 #  File has been updated.
-#  Needs to be updated (-q is set).
-# automatic
-# @ := main.o
-# automatic
-# * := 
-# automatic
-# < := main.c
-# automatic
-# + := main.c
-# automatic
-# % := 
-# automatic
-# ^ := main.c
-# automatic
-# ? := main.c
-# automatic
-# | := 
-# variable set hash-table stats:
-# Load=8/32=25%, Rehash=0, Collisions=2/13=15%
+#  Successfully updated.
 #  recipe to execute (from 'Makefile', line 10):
 	$(CC) $(CFLAGS) -c main.c
 
@@ -341,7 +342,6 @@ main.o: main.c
 #  File has not been updated.
 
 # files hash-table stats:
- 
 # Load=10/1024=1%, Rehash=0, Collisions=0/30=0%
 # VPATH Search Paths
 
@@ -349,12 +349,12 @@ main.o: main.c
 
 # No general ('VPATH' variable) search path.
 
-# strcache buffers: 1 (0) / strings = 25 / storage = 229 B / avg = 9 B
-# current buf: size = 8162 B / used = 229 B / count = 25 / avg = 9 B
+# strcache buffers: 1 (0) / strings = 26 / storage = 243 B / avg = 9 B
+# current buf: size = 8162 B / used = 243 B / count = 26 / avg = 9 B
 
-# strcache performance: lookups = 42 / hit rate = 40%
+# strcache performance: lookups = 44 / hit rate = 40%
 # hash-table stats:
-# Load=25/8192=0%, Rehash=0, Collisions=0/42=0%
-# Finished Make data base on Fri Jun 24 16:37:32 2022
+# Load=26/8192=0%, Rehash=0, Collisions=0/44=0%
+# Finished Make data base on Fri Jun 24 23:18:51 2022
 
  

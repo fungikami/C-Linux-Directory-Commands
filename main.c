@@ -23,7 +23,7 @@ int main(int argc, char **argv) {
 
     traverseDir(rootDir, "txt");
 
-    codif(rootDir);
+    codif2(rootDir);
     wc(rootDir, &lines, &chars);
     printf("%d lineas, %d caracteres\n", lines, chars);
     return 0;

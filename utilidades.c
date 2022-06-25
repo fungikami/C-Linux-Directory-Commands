@@ -14,7 +14,7 @@
 #include <dirent.h>
 #include <sys/stat.h>
 
-#define BUFSIZE 1024
+#define BUFSIZE 4096
 
 /**
  * Funcion que determina si un archivo es un directorio
@@ -195,6 +195,26 @@ int cfind(char *path, char *string, char *string2) {
  *      0 si todo fue correcto, -1 si hubo un error
  */
 int wc(char *path, int *lines, int *chars) {
+    FILE *ptr = fopen(path, "r");
+    char c;
+
+    if (!ptr) {
+        return -1;
+    }
+
+    while (fread(&c, 1, 1, ptr) > 0) {
+        if (c == '\n') {
+            (*lines)++;
+        }
+        (*chars)++;
+    }
+
+    fclose(ptr);
+
+    return 0;
+}
+
+int wc2(char *path, int *lines, int *chars) {
     char c;
     int fd = open(path, O_RDONLY);
 
@@ -222,26 +242,78 @@ int wc(char *path, int *lines, int *chars) {
  */
 int codif(char *path) {
     char inicio, fin;
-    int filesize, i;
+    int filesize;
+    int len1, len2, n;
     int fd1 = open(path, O_RDWR);
-    
+    int fd2 = open(path, O_RDWR);
+
     /* Abre el archivo */
-    if (fd1 == -1) {
-        fprintf(stderr, "Error al abrir el archivo %s\n", path);
-        return -1;
-    }
+    if (fd1 == -1) return -1;
 
     /* Invierte el contenido del archivo */
-    filesize = lseek(fd1, 0, SEEK_END);
-    lseek(fd1, 0, SEEK_SET);
-    for (i = 0; i < filesize / 2; i++) {
+    filesize = lseek(fd2, 0, SEEK_END) - 1;
+    n = filesize / 2;
+
+    while (n) {
         read(fd1, &inicio, 1);
-        read(fd1, &fin, 1);
+        read(fd2, &fin, 1);
+
+        lseek(fd1, -1, SEEK_CUR);
+        lseek(fd2, -1, SEEK_CUR);
+
         write(fd1, &fin, 1);
-        write(fd1, &inicio, 1);
+        write(fd2, &inicio, 1);
+
+        lseek(fd2, -2, SEEK_CUR);
+
+        n--;
     }
 
     close(fd1);
+    return 0;
+} 
+
+/**
+ * Función que invierte el contenido de un archivo
+ * 
+ * Parámetros:
+ *      path: ruta del archivo a invertir el contenido
+ * Retorno:
+ *      0 si todo fue correcto, -1 si hubo un error
+ */
+int codif2(char *path) {
+    FILE *fp1;
+    char inicio, fin;
+    long m, n, filesize;
+
+    /* Abre el archivo */
+    fp1 = fopen(path, "r+");
+    if (!fp1) return -1;
+
+    /* Invierte el contenido del archivo */
+    fseek(fp1, -1,  SEEK_END);
+    filesize = ftell(fp1);
+
+    m = 0;
+    n = filesize / 2;
+    while (n) {
+        fseek(fp1, m++, SEEK_SET);
+        inicio = fgetc(fp1);
+
+        fseek(fp1, -m, SEEK_END);
+        fin = fgetc(fp1);
+
+        fseek(fp1, -m, SEEK_END);
+        fprintf(fp1, "%c", inicio);
+
+        fseek(fp1, m-1, SEEK_SET);
+        fprintf(fp1, "%c", fin);
+
+        n--;
+    }
+
+    fclose(fp1);
+
     return 0;
 }
 

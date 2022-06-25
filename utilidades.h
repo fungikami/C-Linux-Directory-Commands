@@ -14,5 +14,6 @@
     void find(char *path, char *name);
     int ifind(char *path, char *name);
     int codif(char *path);
+    int codif2(char *path);
     int wc(char *path, int *lines, int *chars);
 #endif
