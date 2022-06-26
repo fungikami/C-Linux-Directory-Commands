@@ -3,11 +3,14 @@ CFLAGS = -ansi -Wall -pedantic -g
 
 all: ejecutable
 
-ejecutable: main.o repla.o lista.o par.o utilidades.o
-	$(CC) $(CFLAGS) -o myutil main.o repla.o lista.o par.o utilidades.o
+ejecutable: main.o finds.o repla.o lista.o par.o utilidades.o
+	$(CC) $(CFLAGS) -o myutil main.o finds.o repla.o lista.o par.o utilidades.o
 
 main.o: main.c
 	$(CC) $(CFLAGS) -c main.c
+
+finds.o: finds.c finds.h
+	$(CC) $(CFLAGS) -c finds.c
 
 repla.o: repla.c repla.h
 	$(CC) $(CFLAGS) -c repla.c

@@ -16,7 +16,7 @@
 #include <sys/stat.h>
 #include "utilidades.h"
 
-#define BUFSIZE 1048
+#define BUFSIZE 1024
 
 /**
  * Funcion que determina si un archivo es un directorio
@@ -24,7 +24,7 @@
  * Parámetros:
  *      path: ruta del archivo
  * Retorno:
- *      No nulo si el archivo es un directorio, NULL en caso contrario
+ *      No nulo es una archivo de directorio, NULL en caso contrario
  */
 int is_dir_file(char *path) {
     struct stat st;
@@ -40,6 +40,8 @@ int is_dir_file(char *path) {
  * 
  * Parámetros:
  *      path: ruta del archivo
+ * Retorno:
+ *      No nulo si es un archivo regular, NULL en caso contrario
  */
 int is_reg_file(char *path) {
     struct stat st;
@@ -50,110 +52,6 @@ int is_reg_file(char *path) {
 
     return S_ISREG(st.st_mode);
 } 
-
-/**
- * Función que revisa si el nombre del archivo contiene una cadena dada (case sensitive).
- * 
- * Parámetros:
- *      path: ruta del archivo
- *      args: argumentos necesarios para la funcion 
- * Retorno:
- *      0 si no contiene la cadena, 1 si contiene la cadena
- */
-int find(char *path, struct Args *args) {
-    char *string = args->cadena1;
-    if (!string || strstr(path, string)) {
-        printf("%s\n", path);
-        return 1;
-    }
-    return 0;
-}
-
-/**
- * Función que revisa si el nombre del archivo contiene una cadena dada (case insensitive).
- * 
- * Parámetros:
- *      path: ruta del archivo
- *      args: argumentos necesarios para la funcion 
- * Retorno:
- *      0 si no contiene la cadena, 1 si contiene la cadena
- */
-int ifind(char *path, struct Args *args) {
-    char *string = args->cadena1;
-    if (!string || strcasestr(path, string)) {
-        printf("%s\n", path);
-        return 1;
-    }
-    return 0;
-}
-
-/**
- * Función que revisa si el nombre del archivo contiene una cadena dada (case sensitive).
- * y si el contenido contiene string2.
- * Parámetros:
- *      path: ruta del archivo
- *      args: argumentos necesarios para la funcion 
- * Retorno:
- *      0 si no contiene la cadena, 1 si contiene la cadena
- */
-int cfind(char *path, struct Args *args) {
-    char *string = args->cadena1;
-    char *string2 = args->cadena2;
-    char buffer[BUFSIZE];
-    int fd, len;
-
-    /* Verifica si path contiene el string */
-    if (!strstr(path, string)) return 0;
-    
-    /* Abre el archivo regular */
-    fd = open(path, O_RDONLY);
-    if (fd == -1) {
-        fprintf(stderr, "Error al abrir el archivo %s\n", path);
-        return -1;
-    }
-
-    /* Verifica que el contenido del archivo tenga la cadena string2 */
-    while ((len = read(fd, buffer, BUFSIZE)) > 0) {
-        if (strstr(buffer, string2)) {
-            printf("%s\n", path);
-            return 1;
-        }
-    }
-
-    close(fd);
-    return 0;
-}
-
-int cfind2(char *path, struct Args *args) {
-    FILE *stream;
-    char *line = NULL;
-    char *string = args->cadena1;
-    char *string2 = args->cadena2;
-    size_t len = 0;
-    ssize_t nread;
-
-    /* Verifica si path contiene el string */
-    if (!strstr(path, string)) return 0;
-    
-    /* Abre el archivo regular */
-    stream = fopen(path, "r");
-    if (stream == NULL) {
-        fprintf(stderr, "Error al abrir el archivo %s\n", path);
-        return -1;
-    }
-
-    /* Verifica que el contenido del archivo tenga la cadena string2 */
-    while ((nread = getline(&line, &len, stream)) != -1) {
-        if (strstr(line, string2)) {
-            printf("%s\n", path);
-            return 1;
-        }
-    }
-
-    free(line);
-    fclose(stream);
-    return 0;
-}
 
 /**
  * Función que cuenta el total de lineas y caracteres de un archivo

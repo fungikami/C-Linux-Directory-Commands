@@ -8,7 +8,6 @@
 #ifndef __REPLA_H__
     #define __REPLA_H__
 
-    #include <stdio.h>
     #include "lista.h"
     #include "utilidades.h"
 

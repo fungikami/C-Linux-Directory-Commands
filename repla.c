@@ -91,7 +91,6 @@ int repla(char* archivo, struct Args *args) {
     /* Revisamos por cada coincidencia de char del archivo a reemplazar */
     ch = fgetc(ptr);
     while (ch != EOF) {   
-        
         /* Revisamos por cada palabra de la lista */
         struct Nodo* actual = cabeza;
         while (actual != NULL) {

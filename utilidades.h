@@ -17,10 +17,7 @@
     };
 
     int is_dir_file(char *path);
-    int find(char *path, struct Args *args);
-    int ifind(char *path, struct Args *args);
-    int cfind(char *path, struct Args *args);
-    int cfind2(char *path, struct Args *args);
+    int is_reg_file(char *path);
     int codif(char *path, struct Args *args);
     int count_lines_chars(char *path, int *lines, int *chars);
     int wc(char *path, int *nlines, int *nchars);

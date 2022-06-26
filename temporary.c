@@ -204,3 +204,63 @@ int codif(struct Args *args) {
     fclose(fp);
     return 0;
 }
+
+int cfind2(char *path, struct Args *args) {
+    FILE *stream;
+    char *line = NULL;
+    char *string = args->cadena1;
+    char *string2 = args->cadena2;
+    size_t len = 0;
+    ssize_t nread;
+
+    /* Verifica si path contiene el string */
+    if (!strstr(path, string)) return 0;
+    
+    /* Abre el archivo regular */
+    stream = fopen(path, "r");
+    if (stream == NULL) {
+        fprintf(stderr, "Error al abrir el archivo %s\n", path);
+        return -1;
+    }
+
+    /* Verifica que el contenido del archivo tenga la cadena string2 */
+    while ((nread = getline(&line, &len, stream)) != -1) {
+        if (strstr(line, string2)) {
+            printf("%s\n", path);
+            return 1;
+        }
+    }
+
+    free(line);
+    fclose(stream);
+    return 0;
+}
+
+/* MALOOO */
+int cfind(char *path, struct Args *args) {
+    char *string = args->cadena1;
+    char *string2 = args->cadena2;
+    char buffer[BUFSIZE];
+    int fd, len;
+
+    /* Verifica si path contiene el string */
+    if (!strstr(path, string)) return 0;
+    
+    /* Abre el archivo regular */
+    fd = open(path, O_RDONLY);
+    if (fd == -1) {
+        fprintf(stderr, "Error al abrir el archivo %s\n", path);
+        return -1;
+    }
+
+    /* Verifica que el contenido del archivo tenga la cadena string2 */
+    while ((len = read(fd, buffer, BUFSIZE)) > 0) {
+        if (strstr(buffer, string2)) {
+            printf("%s\n", path);
+            return 1;
+        }
+    }
+
+    close(fd);
+    return 0;
+}

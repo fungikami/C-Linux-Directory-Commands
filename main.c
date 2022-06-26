@@ -9,6 +9,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include "utilidades.h"
+#include "finds.h"
 #include "repla.h"
 
 int main(int argc, char **argv) {
@@ -60,6 +61,9 @@ int main(int argc, char **argv) {
     printf("\nProbando cfind con la palabra %s\n", argv[3]);
     traverseDir(directorioRaiz, cfind, args, 0);
 
+    printf("\nProbando codif\n");
+    traverseDir(directorioRaiz, codif, args, 0);
+    
     printf("\nProbando repla\n");
     args->lista = extraer_palabras(argv[4]);
     traverseDir(directorioRaiz, repla, args, 0); 
@@ -67,11 +71,9 @@ int main(int argc, char **argv) {
     printf("\nProbando wc\n");
     wc(directorioRaiz, &lineas, &chars);
 
-    printf("\nProbando codif\n");
-    traverseDir(directorioRaiz, codif, args, 0);
 
     printf("\nProbando roll\n");
     /* traverseDir(directorioRaiz, roll, args, 0);
-    /* roll("roll.txt", 3); */
+    roll("roll.txt", 3); */
     return 0;
 }
