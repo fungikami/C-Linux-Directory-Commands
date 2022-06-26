@@ -16,7 +16,7 @@
 #include <sys/stat.h>
 #include "utilidades.h"
 
-#define BUFSIZE 4096
+#define BUFSIZE 1048
 
 /**
  * Funcion que determina si un archivo es un directorio
@@ -36,19 +36,34 @@ int is_dir_file(char *path) {
 }
 
 /**
+ * Funcion que determina si un archivo es regular
+ * 
+ * Parámetros:
+ *      path: ruta del archivo
+ */
+int is_reg_file(char *path) {
+    struct stat st;
+    if (stat(path, &st) == -1) {
+        fprintf(stderr, "No se pudo aplicar stat sobre el archivo %s\n", path);
+        return -1;
+    }
+
+    return S_ISREG(st.st_mode);
+} 
+
+/**
  * Función que revisa si el nombre del archivo contiene una cadena dada (case sensitive).
  * 
  * Parámetros:
  *      path: ruta del archivo
- *      string: cadena a buscar
+ *      args: argumentos necesarios para la funcion 
  * Retorno:
  *      0 si no contiene la cadena, 1 si contiene la cadena
  */
-int find(struct Args *args) {
-    char *path = args->path;
+int find(char *path, struct Args *args) {
     char *string = args->cadena1;
-    if (strstr(path, string)) {
-        if (args->to_print) printf("%s\n", path);
+    if (!string || strstr(path, string)) {
+        printf("%s\n", path);
         return 1;
     }
     return 0;
@@ -59,14 +74,13 @@ int find(struct Args *args) {
  * 
  * Parámetros:
  *      path: ruta del archivo
- *      string: cadena a buscar
+ *      args: argumentos necesarios para la funcion 
  * Retorno:
  *      0 si no contiene la cadena, 1 si contiene la cadena
  */
-int ifind(struct Args *args) {
-    char *path = args->path;
+int ifind(char *path, struct Args *args) {
     char *string = args->cadena1;
-    if (strcasestr(path, string)) {
+    if (!string || strcasestr(path, string)) {
         printf("%s\n", path);
         return 1;
     }
@@ -78,12 +92,11 @@ int ifind(struct Args *args) {
  * y si el contenido contiene string2.
  * Parámetros:
  *      path: ruta del archivo
- *      string: cadena a buscar
+ *      args: argumentos necesarios para la funcion 
  * Retorno:
  *      0 si no contiene la cadena, 1 si contiene la cadena
  */
-int cfind(struct Args *args) {
-    char *path = args->path;
+int cfind(char *path, struct Args *args) {
     char *string = args->cadena1;
     char *string2 = args->cadena2;
     char buffer[BUFSIZE];
@@ -111,9 +124,39 @@ int cfind(struct Args *args) {
     return 0;
 }
 
+int cfind2(char *path, struct Args *args) {
+    FILE *stream;
+    char *line = NULL;
+    char *string = args->cadena1;
+    char *string2 = args->cadena2;
+    size_t len = 0;
+    ssize_t nread;
+
+    /* Verifica si path contiene el string */
+    if (!strstr(path, string)) return 0;
+    
+    /* Abre el archivo regular */
+    stream = fopen(path, "r");
+    if (stream == NULL) {
+        fprintf(stderr, "Error al abrir el archivo %s\n", path);
+        return -1;
+    }
+
+    /* Verifica que el contenido del archivo tenga la cadena string2 */
+    while ((nread = getline(&line, &len, stream)) != -1) {
+        if (strstr(line, string2)) {
+            printf("%s\n", path);
+            return 1;
+        }
+    }
+
+    free(line);
+    fclose(stream);
+    return 0;
+}
 
 
-int repla(struct Args *args) {
+int repla(char *path, struct Args *args) {
     /* lista_cabeza = extraer_palabras(argv[1]);
     if (!lista_cabeza) {
         fprintf(stderr, "Error al extraer palabras\n");
@@ -239,13 +282,12 @@ int wc(char *path, int *cum_lines, int *cum_chars) {
  * Retorno:
  *      0 si todo fue correcto, -1 si hubo un error
  */
-int codif(struct Args *args) {
-    char *path = args->path;
+int codif(char *path, struct Args *args) {
     int izq, der;
     int fd = open(path, O_RDWR);
     long m, n, filesize;
 
-    /* Abre el archivo */
+    /* Verifica que el archivo fue abierto */
     if (fd == -1) return -1;
 
     filesize = lseek(fd, -1, SEEK_END);
@@ -285,15 +327,29 @@ int codif(struct Args *args) {
  * 
  */
 int roll(char *path, int n) {
-    int fd = open(path, O_RDONLY);
-    int lines = 0;
-    int chars = 0;
-    char c;
+    int fd = open(path, O_RDWR);
+    int len1, len2, i;
+    char *buf = malloc(n);
+    char *buf_roll = malloc(n);
+    read(fd, buf_roll, n);
+
+    while ((len1 = read(fd, buf, n)) > 0) {
+        printf("%s %d\n", buf, len1);
+        len2 = 0;
+        do {
+
+            lseek(fd, -len1-n, SEEK_CUR);
+            i = write(fd, buf + len2, len1 - len2);
+            printf("%d\n", i);
+            len2 += i;
+            lseek(fd, len2+(len1-len2), SEEK_CUR);
+
+        } while (len2 < len1);
+    }
 
     close(fd);
     return 0;
 }
-
 
 /**
  * Función que recorre recursivamente 
@@ -305,7 +361,7 @@ int roll(char *path, int n) {
  * Retorno:
  *      0 si todo fue correcto, -1 si hubo un error
  */
-int traverseDir(char* path, int (*fun) (struct Args* argum), struct Args* argum, int action_to_dir) {
+int traverseDir(char* path, int (*fun) (char *path, struct Args* argum), struct Args* argum, int action_to_dir) {
     DIR* dir;
     struct dirent* ent;
 
@@ -330,17 +386,26 @@ int traverseDir(char* path, int (*fun) (struct Args* argum), struct Args* argum,
             int is_dir = is_dir_file(new_path);
             if (is_dir == -1) return -1;
 
-            /* Si es un directorio, sigue recorriendo */
             if (is_dir) {
+                /* Si es un directorio, sigue recorriendo */
                 if (traverseDir(new_path, fun, argum, action_to_dir) == -1) return -1;
             } else {
-                /* Si es un archivo regular,  */
-                if (action_to_dir == 0) {
-                    argum->path = new_path;
-                    if (fun(argum) == -1) return -1;
+                int is_reg = is_reg_file(new_path);
+                if (is_reg == -1) return -1;
+
+                /* Si es un archivo regular, llama la función */
+                if (is_reg) {
+                    if (!action_to_dir) {
+                        if (fun(new_path, argum) == -1) return -1;
+                    }
                 }
             }
         }
+
+        if (action_to_dir) {
+            if (fun(new_path, argum) == -1) return -1;
+        }
+        
         free(new_path);
     }
 

@@ -72,7 +72,7 @@ struct Nodo* extraer_palabras(char* archivo) {
  *      - cabeza: cabeza de la lista doblemente enlazada
  */
 int remplazar_palabras(char* archivo, struct Nodo* cabeza) {
-    int ch;
+    char ch;
     char* temp_archivo = random_string(10);   
     FILE *ptr, *write_ptr;
 

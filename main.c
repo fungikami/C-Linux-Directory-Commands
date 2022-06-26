@@ -40,9 +40,7 @@ int main(int argc, char **argv) {
     args->path = directorioRaiz;
     args->cadena1 = string1;
     args->cadena2 = argv[3];
-    args->palabras = NULL;
     args->n = 0;
-    args->to_print = 1;
 
     /*  while () {
         printf("myutil> ");
@@ -57,7 +55,7 @@ int main(int argc, char **argv) {
     printf("\nProbando ifind\n");
     traverseDir(directorioRaiz, ifind, args, 0);
 
-    printf("\nProbando cfind\n");
+    printf("\nProbando cfind con la palabra %s\n", argv[3]);
     traverseDir(directorioRaiz, cfind, args, 0);
 
     printf("\nProbando repla\n");
@@ -76,7 +74,7 @@ int main(int argc, char **argv) {
 
     printf("\nProbando roll\n");
     /* traverseDir(directorioRaiz, roll, args, 0); */
-
+    /* roll("roll.txt", 3); */
     return 0;
 }
 
