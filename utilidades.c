@@ -76,20 +76,20 @@ int codif(char *path, struct Args *args) {
     n = filesize / 2;
     while (n) {
         /* Lee el caracter más izquierdo a intercambiar */
-        lseek(fd, m++, SEEK_SET);
-        read(fd, &izq, 1);
+        if (lseek(fd, m++, SEEK_SET) == -1) return -1;
+        if (read(fd, &izq, 1) == -1) return -1;
 
         /* Lee el caracter más derecho a intercambiar */
-        lseek(fd, -m, SEEK_END);
-        read(fd, &der, 1);
+        if (lseek(fd, -m, SEEK_END) == -1) return -1;
+        if (read(fd, &der, 1) == -1) return -1;
 
         /* Escribe el caracter más derecho en la izquierda*/
-        lseek(fd, -m, SEEK_END);
-        write(fd, &izq, 1);
+        if (lseek(fd, -m, SEEK_END) == -1) return -1;
+        if (write(fd, &izq, 1) == -1) return -1;
 
         /* Escribe el caracter más izquierdo en la derecha*/
-        lseek(fd, m-1, SEEK_SET);
-        write(fd, &der, 1);
+        if (lseek(fd, m-1, SEEK_SET) == -1) return -1;
+        if (write(fd, &der, 1) == -1) return -1;
 
         n--;
     }
