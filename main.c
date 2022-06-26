@@ -11,6 +11,7 @@
 #include "utilidades.h"
 #include "finds.h"
 #include "repla.h"
+#include "wc.h"
 
 int main(int argc, char **argv) {
     char* directorioRaiz;
@@ -61,16 +62,15 @@ int main(int argc, char **argv) {
     printf("\nProbando cfind con la palabra %s\n", argv[3]);
     traverseDir(directorioRaiz, cfind, args, 0);
 
-    printf("\nProbando codif\n");
-    traverseDir(directorioRaiz, codif, args, 0);
-    
-    printf("\nProbando repla\n");
+    /* printf("\nProbando repla\n");
     args->lista = extraer_palabras(argv[4]);
-    traverseDir(directorioRaiz, repla, args, 0); 
+    traverseDir(directorioRaiz, repla, args, 0);  */
 
     printf("\nProbando wc\n");
     wc(directorioRaiz, &lineas, &chars);
 
+    printf("\nProbando codif\n");
+    traverseDir(directorioRaiz, codif, args, 0);
 
     printf("\nProbando roll\n");
     /* traverseDir(directorioRaiz, roll, args, 0);

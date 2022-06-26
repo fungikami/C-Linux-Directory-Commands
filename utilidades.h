@@ -19,8 +19,6 @@
     int is_dir_file(char *path);
     int is_reg_file(char *path);
     int codif(char *path, struct Args *args);
-    int count_lines_chars(char *path, int *lines, int *chars);
-    int wc(char *path, int *nlines, int *nchars);
     int roll(char *path, int n);
     int traverseDir(char* path, int (*fun) (char *path, struct Args* argum), struct Args* argum, int action_to_dir);
 #endif
