@@ -155,25 +155,6 @@ int cfind2(char *path, struct Args *args) {
     return 0;
 }
 
-
-int repla(char *path, struct Args *args) {
-    /* lista_cabeza = extraer_palabras(argv[1]);
-    if (!lista_cabeza) {
-        fprintf(stderr, "Error al extraer palabras\n");
-        return -1;
-    }
-
-    for (i = 2; i < argc; i++) {
-        int j = remplazar_palabras(argv[i], lista_cabeza);
-        if (j < 0) {
-            fprintf(stderr, "Error al reemplazar palabras\n");
-            return -1;
-        }
-        
-    } */
-    return 0;
-}
-
 /**
  * Función que cuenta el total de lineas y caracteres de un archivo
  * 
@@ -405,7 +386,7 @@ int traverseDir(char* path, int (*fun) (char *path, struct Args* argum), struct 
         if (action_to_dir) {
             if (fun(new_path, argum) == -1) return -1;
         }
-        
+
         free(new_path);
     }
 

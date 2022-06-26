@@ -71,30 +71,27 @@ struct Nodo* extraer_palabras(char* archivo) {
  *      - archivo: archivo a reemplazar
  *      - cabeza: cabeza de la lista doblemente enlazada
  */
-int remplazar_palabras(char* archivo, struct Nodo* cabeza) {
+int repla(char* archivo, struct Args *args) {
+    struct Nodo* cabeza = args->lista;
     char ch;
     char* temp_archivo = random_string(10);   
     FILE *ptr, *write_ptr;
 
     struct stat st;
-    if (stat(archivo, &st) == -1) {
-        return -1;
-    }
-    
-    ptr = fopen(archivo, "r");
-    if (!ptr) {
-        return -1;
-    }
+    if (stat(archivo, &st) == -1) return -1;
 
+    /* Abrir el archivo a leer */
+    ptr = fopen(archivo, "r");
+    if (!ptr) return -1;
+    
+    /* Abrir el archivo temporal a escribir */
     write_ptr = fopen(temp_archivo, "w");
-    if (!write_ptr) {
-        return -1;
-    }
+    if (!write_ptr) return -1;
 
     /* Revisamos por cada coincidencia de char del archivo a reemplazar */
     ch = fgetc(ptr);
     while (ch != EOF) {   
-
+        
         /* Revisamos por cada palabra de la lista */
         struct Nodo* actual = cabeza;
         while (actual != NULL) {
@@ -134,7 +131,6 @@ int remplazar_palabras(char* archivo, struct Nodo* cabeza) {
         return -1;
     }
 
-    printf("%s\n", temp_archivo);
     free(temp_archivo);
 
     chmod(archivo, st.st_mode);

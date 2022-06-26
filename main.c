@@ -9,6 +9,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include "utilidades.h"
+#include "repla.h"
 
 int main(int argc, char **argv) {
     char* directorioRaiz;
@@ -42,13 +43,14 @@ int main(int argc, char **argv) {
     args->cadena2 = argv[3];
     args->n = 0;
 
-    /*  while () {
+    /* while (1) {
+        char string[256];
         printf("myutil> ");
-        scanf("%[^\n]", args->dirRaiz);
+        scanf( "%s" , string );
+
     } */
 
     
-    /* */
     printf("\nProbando find\n");
     traverseDir(directorioRaiz, find, args, 0);
 
@@ -59,12 +61,8 @@ int main(int argc, char **argv) {
     traverseDir(directorioRaiz, cfind, args, 0);
 
     printf("\nProbando repla\n");
-    /* Encuentra archivo de las palabras y las extrae */
-    /*  args->to_print = 0;
-    traverseDir(directorioRaiz, find, args, 0);
-    printf("%s\n", args->path); 
-    args->palabras = extraer_palabras(args->path);
-    repla(args); */
+    args->lista = extraer_palabras(argv[4]);
+    traverseDir(directorioRaiz, repla, args, 0); 
 
     printf("\nProbando wc\n");
     wc(directorioRaiz, &lineas, &chars);
@@ -73,8 +71,7 @@ int main(int argc, char **argv) {
     traverseDir(directorioRaiz, codif, args, 0);
 
     printf("\nProbando roll\n");
-    /* traverseDir(directorioRaiz, roll, args, 0); */
+    /* traverseDir(directorioRaiz, roll, args, 0);
     /* roll("roll.txt", 3); */
     return 0;
 }
-

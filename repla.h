@@ -10,8 +10,9 @@
 
     #include <stdio.h>
     #include "lista.h"
+    #include "utilidades.h"
 
     char *random_string(int length);
-    struct Nodo* extraer_palabras(char* archivo);
-    int remplazar_palabras(char* archivo, struct Nodo* cabeza);
+    struct Nodo *extraer_palabras(char *archivo);
+    int repla(char *archivo, struct Args *args);
 #endif

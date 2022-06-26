@@ -12,6 +12,7 @@
         char* path;
         char* cadena1;
         char* cadena2;
+        struct Nodo* lista;
         int n;
     };
 
