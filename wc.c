@@ -80,17 +80,26 @@ int wc(char *path, int *cum_lines, int *cum_chars) {
         /* Si no se trata de una dirección con puntos, se revisa su contenido*/
         if (!dots) {
             int is_dir = is_dir_file(new_path);
-            if (is_dir == -1) return -1;
+            if (is_dir == -1) {
+                free(new_path);
+                continue;
+            }
 
             if (is_dir) {
                 /* Si es un directorio, sigue recorriendo */
                 int status = wc(new_path, cum_lines, cum_chars);
-                if (status == -1) return -1;
+                if (status == -1) {
+                    free(new_path);
+                    continue;
+                }
                 lines += *cum_lines;
                 chars += *cum_chars;
             } else {
                 /* Si es un archivo regular, cuenta el número de líneas y caracteres */
-                if (count_lines_chars(new_path, &lines, &chars) == -1) return -1;
+                if (count_lines_chars(new_path, &lines, &chars) == -1) {
+                    free(new_path);
+                    continue;
+                }
             }
         }
 

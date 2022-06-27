@@ -205,7 +205,7 @@ int codif(struct Args *args) {
     return 0;
 }
 
-int cfind2(char *path, struct Args *args) {
+int cfind(char *path, struct Args *args) {
     FILE *stream;
     char *line = NULL;
     char *string = args->cadena1;
@@ -227,6 +227,8 @@ int cfind2(char *path, struct Args *args) {
     while ((nread = getline(&line, &len, stream)) != -1) {
         if (strstr(line, string2)) {
             printf("%s\n", path);
+            free(line);
+            fclose(stream);
             return 1;
         }
     }

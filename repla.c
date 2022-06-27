@@ -40,6 +40,7 @@ struct Nodo* extraer_palabras(char* archivo) {
         char* word1 = (char *)malloc(sizeof(char) * strlen(temp1) + 1);
         char* word2 = (char *)malloc(sizeof(char) * strlen(temp2) + 1);
         if (!word1 || !word2) {
+            fclose(ptr);
             return NULL;
         }
 
@@ -50,12 +51,17 @@ struct Nodo* extraer_palabras(char* archivo) {
         /* Crea par de palabras */
         palabras = crear_par(word1, word2);
         if (!palabras) {
+            free(word1);
+            free(word2);
+            fclose(ptr);
             return NULL;
         }
 
         /* Inserta par de palabras en la lista */
         i = insertar_ordenado_lista(&lista_cabeza, palabras);
         if (i < 0) {
+            liberar_lista(lista_cabeza);
+            fclose(ptr);
             return NULL;
         }
     }
@@ -70,6 +76,8 @@ struct Nodo* extraer_palabras(char* archivo) {
  * Parametros:
  *      - archivo: archivo a reemplazar
  *      - cabeza: cabeza de la lista doblemente enlazada
+ * Retorno:
+ *      - 0 si se pudo reemplazar, -1 si no se pudo reemplazar
  */
 int repla(char* archivo, struct Args *args) {
     struct Nodo* cabeza = args->lista;
@@ -86,7 +94,11 @@ int repla(char* archivo, struct Args *args) {
     
     /* Abrir el archivo temporal a escribir */
     write_ptr = fopen(temp_archivo, "w");
-    if (!write_ptr) return -1;
+    if (!write_ptr) {
+        free(temp_archivo);
+        fclose(ptr);
+        return -1;
+    }
 
     /* Revisamos por cada coincidencia de char del archivo a reemplazar */
     ch = fgetc(ptr);
@@ -126,14 +138,13 @@ int repla(char* archivo, struct Args *args) {
 
     /* Renombra el archivo temporal */
     if (rename(temp_archivo, archivo) != 0) {
+        free(temp_archivo);
         remove(temp_archivo);
         return -1;
     }
 
     free(temp_archivo);
-
     chmod(archivo, st.st_mode);
-
     return 0;
 }
 

@@ -136,7 +136,8 @@ int roll(char *path, int n) {
  * Parámetros:
  *      fun: función a ejecutar por cada archivo
  *      args: argumentos para la función
- *      action_to_dir: indica si la función a ejecutar es para un directorio o un archivo
+ *      action_to_dir: indica si la función a ejecutar es para un directorio y/o un archivo
+ *      0 si es solo un archivo, 1 si es un directorio, 2 si es un archivo y un directorio
  * Retorno:
  *      0 si todo fue correcto, -1 si hubo un error
  */
@@ -163,29 +164,41 @@ int traverseDir(char* path, int (*fun) (char *path, struct Args* argum), struct 
         /* Recorre recursivamente por cada directorio */
         if (!dots) {
             int is_dir = is_dir_file(new_path);
-            if (is_dir == -1) return -1;
+            if (is_dir == -1) {
+                free(new_path);
+                continue;
+            }
 
             if (is_dir) {
                 /* Si es un directorio, sigue recorriendo */
-                if (traverseDir(new_path, fun, argum, action_to_dir) == -1) return -1;
+                if (traverseDir(new_path, fun, argum, action_to_dir) == -1) {
+                    free(new_path);
+                    continue;
+                }
             } else {
                 int is_reg = is_reg_file(new_path);
                 if (is_reg == -1) return -1;
 
                 /* Si es un archivo regular, llama la función */
                 if (is_reg) {
-                    if (!action_to_dir) {
-                        if (fun(new_path, argum) == -1) return -1;
+                    if (action_to_dir==0 || action_to_dir==2) {
+                        if (fun(new_path, argum) == -1) {
+                            free(new_path);
+                            continue;
+                        }
                     }
                 }
             }
         }
 
-        if (action_to_dir) {
-            if (fun(new_path, argum) == -1) return -1;
-        }
-
         free(new_path);
+    }
+
+    if (action_to_dir==1 || action_to_dir==2) {
+        if (fun(path, argum) == -1) {
+            closedir(dir);
+            return -1;
+        }
     }
 
     closedir(dir);

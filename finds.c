@@ -78,6 +78,7 @@ int cfind(char *path, struct Args *args) {
                 cur_char++;
                 if (cur_char == strlen(string2)) {
                     printf("%s\n", path);
+                    close(fd);
                     return 1;
                 }
             } else {

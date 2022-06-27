@@ -44,23 +44,15 @@ int main(int argc, char **argv) {
     args->cadena1 = string1;
     args->cadena2 = argv[3];
     args->n = 0;
-
-    /* while (1) {
-        char string[256];
-        printf("myutil> ");
-        scanf( "%s" , string );
-
-    } */
-
     
     printf("\nProbando find\n");
-    traverseDir(directorioRaiz, find, args, 0);
+    traverseDir(directorioRaiz, find, args, 2);
 
     printf("\nProbando ifind\n");
-    traverseDir(directorioRaiz, ifind, args, 0);
+    traverseDir(directorioRaiz, ifind, args, 2);
 
     printf("\nProbando cfind con la palabra %s\n", argv[3]);
-    traverseDir(directorioRaiz, cfind, args, 0);
+    traverseDir(directorioRaiz, cfind, args, 2);
 
     /* printf("\nProbando repla\n");
     args->lista = extraer_palabras(argv[4]);
