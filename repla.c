@@ -15,59 +15,30 @@
 #include <sys/stat.h>
 #include <time.h>
 #include "lista.h"
-#include "repla.h"
+#include "utilidades.h"
 
-/** 
- * Dado un archivo con una lista de palabras a sustituir, extrae 
- * las palabras y las guarda en una lista doblemente enlazada dada.
+int repla_aux(char *archivo, struct Args *args);
+char *random_string(int length);
+struct Nodo *extraer_palabras(char *archivo);
+
+/**
+ * Funcion que reemplaza una cadena de caracteres por otra en los 
+ * archivos de un directorio raíz dado.
+ * 
  * Parámetros:
- * 		- archivo: nombre del archivo
- *      - cabeza: puntero a la lista
+ *      directorioRaiz: ruta del directorio raíz
+ *      file: lista de pares de cadenas de caracteres
  */
-struct Nodo* extraer_palabras(char* archivo) {
-    char temp1[60], temp2[60];
-    struct Nodo* lista_cabeza = crear_lista();
-
-    FILE* ptr = fopen(archivo, "r");
-    if (!ptr) {
-        return NULL;
+void repla(char *directorioRaiz, char *file) {
+    struct Args* args = (struct Args*)malloc(sizeof(struct Args));
+    if (!args) {
+        fprintf(stderr, "Error al reservar memoria\n");
     }
-
-    /* Extrae las palabras y las separa según el char ':' */
-    while(fscanf(ptr, "%[^:]:%[^\n]\n", temp1, temp2) != EOF) {
-        Par* palabras;
-        int i;
-        char* word1 = (char *)malloc(sizeof(char) * strlen(temp1) + 1);
-        char* word2 = (char *)malloc(sizeof(char) * strlen(temp2) + 1);
-        if (!word1 || !word2) {
-            fclose(ptr);
-            return NULL;
-        }
-
-        /* Copia las palabras y guarda en la lista doblemente enlazada */
-        strcpy(word1, temp1);
-        strcpy(word2, temp2);
-
-        /* Crea par de palabras */
-        palabras = crear_par(word1, word2);
-        if (!palabras) {
-            free(word1);
-            free(word2);
-            fclose(ptr);
-            return NULL;
-        }
-
-        /* Inserta par de palabras en la lista */
-        i = insertar_ordenado_lista(&lista_cabeza, palabras);
-        if (i < 0) {
-            liberar_lista(lista_cabeza);
-            fclose(ptr);
-            return NULL;
-        }
+    args->lista = extraer_palabras(file);
+    if (traverseDir(directorioRaiz, repla_aux, args, 0) == -1) {
+        fprintf(stderr, "Error al ejecutar repla.\n");
     }
-
-    fclose(ptr);
-    return lista_cabeza;
+    free(args);
 }
 
 /** 
@@ -79,7 +50,7 @@ struct Nodo* extraer_palabras(char* archivo) {
  * Retorno:
  *      - 0 si se pudo reemplazar, -1 si no se pudo reemplazar
  */
-int repla(char* archivo, struct Args *args) {
+int repla_aux(char* archivo, struct Args *args) {
     struct Nodo* cabeza = args->lista;
     char ch;
     char* temp_archivo = random_string(10);   
@@ -168,4 +139,57 @@ char *random_string(int length) {
     string[i] = '\0';
     strcat(string, "-repla.tmp");
     return string;
+}
+
+/** 
+ * Dado un archivo con una lista de palabras a sustituir, extrae 
+ * las palabras y las guarda en una lista doblemente enlazada dada.
+ * Parámetros:
+ * 		- archivo: nombre del archivo
+ *      - cabeza: puntero a la lista
+ */
+struct Nodo* extraer_palabras(char* archivo) {
+    char temp1[60], temp2[60];
+    struct Nodo* lista_cabeza = crear_lista();
+
+    FILE* ptr = fopen(archivo, "r");
+    if (!ptr) {
+        return NULL;
+    }
+
+    /* Extrae las palabras y las separa según el char ':' */
+    while(fscanf(ptr, "%[^:]:%[^\n]\n", temp1, temp2) != EOF) {
+        Par* palabras;
+        int i;
+        char* word1 = (char *)malloc(sizeof(char) * strlen(temp1) + 1);
+        char* word2 = (char *)malloc(sizeof(char) * strlen(temp2) + 1);
+        if (!word1 || !word2) {
+            fclose(ptr);
+            return NULL;
+        }
+
+        /* Copia las palabras y guarda en la lista doblemente enlazada */
+        strcpy(word1, temp1);
+        strcpy(word2, temp2);
+
+        /* Crea par de palabras */
+        palabras = crear_par(word1, word2);
+        if (!palabras) {
+            free(word1);
+            free(word2);
+            fclose(ptr);
+            return NULL;
+        }
+
+        /* Inserta par de palabras en la lista */
+        i = insertar_ordenado_lista(&lista_cabeza, palabras);
+        if (i < 0) {
+            liberar_lista(lista_cabeza);
+            fclose(ptr);
+            return NULL;
+        }
+    }
+
+    fclose(ptr);
+    return lista_cabeza;
 }

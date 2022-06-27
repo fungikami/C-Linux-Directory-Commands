@@ -8,6 +8,5 @@
 #ifndef __WC_H__
     #define __WC_H__
 
-    int count_lines_chars(char *path, int *lines, int *chars);
-    int wc(char *path, int *nlines, int *nchars);
+    void wc(char *directorioRaiz);
 #endif

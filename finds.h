@@ -7,9 +7,8 @@
 
 #ifndef __FINDS_H__
     #define __FINDS_H__
-    #include "utilidades.h"
 
-    int find(char *path, struct Args *args);
-    int ifind(char *path, struct Args *args);
-    int cfind(char *path, struct Args *args);
+    void find(char *directorioRaiz, char *cadena);
+    void ifind(char *directorioRaiz, char *cadena);
+    void cfind(char *directorioRaiz, char *cadena1, char *cadena2);
 #endif
