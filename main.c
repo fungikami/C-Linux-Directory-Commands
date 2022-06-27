@@ -7,12 +7,11 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <time.h>
-#include "utilidades.h"
 #include "finds.h"
 #include "repla.h"
 #include "wc.h"
-#include "codif_roll.h"
+#include "codif.h"
+#include "roll.h"
 
 int main(int argc, char **argv) {
     printf("Directorio raiz: %s\n", argv[1]);

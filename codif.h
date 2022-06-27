@@ -5,9 +5,8 @@
  * Fecha: 08/07/2020 
  */
 
-#ifndef __CODIF_ROLL_H__
-    #define __CODIF_ROLL_H__
+#ifndef __CODIF_H__
+    #define __CODIF_H__
 
     void codif(char *directorioRaiz);
-    void roll(char *directorioRaiz, int n);
 #endif
