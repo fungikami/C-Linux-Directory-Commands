@@ -1,3 +1,10 @@
+/**
+ * wc.c
+ * 
+ * Autor: Ka Fung (18-10492)
+ * Fecha: 08/07/2020 
+ */
+
 #include <stdio.h>
 #include <stdlib.h> 
 #include <string.h>

@@ -34,26 +34,55 @@ void roll(char *directorioRaiz, int n) {
  */
 int roll_aux(char *path, struct Args *args) {   
     int n = args->n;
+    int m = abs(n);
     int fd = open(path, O_RDWR);
-    int len1, len2, i;
-    char *buf = malloc(n);
-    char *buf_roll = malloc(n);
-    read(fd, buf_roll, n);
+    int filesize;
+    char *buffer_n = (char*)malloc(m);
+    char *buffer;
 
-    while ((len1 = read(fd, buf, n)) > 0) {
-        printf("%s %d\n", buf, len1);
-        len2 = 0;
-        do {
-
-            lseek(fd, -len1-n, SEEK_CUR);
-            i = write(fd, buf + len2, len1 - len2);
-            printf("%d\n", i);
-            len2 += i;
-            lseek(fd, len2+(len1-len2), SEEK_CUR);
-
-        } while (len2 < len1);
+    /* Verifica que el archivo fue abierto */
+    if (fd == -1) {
+        fprintf(stderr, "Error al abrir el archivo %s\n", path);
+        return -1;
     }
 
+    filesize = lseek(fd, -1, SEEK_END);
+    buffer = (char*)malloc(filesize - m);
+
+    /* Si n es positivo, se rota hacia la derecha */
+    if (n >= 0) {
+        /* Lee los ultimos n caracteres */
+        lseek(fd, -m-1, SEEK_END);
+        read(fd, buffer_n, m);
+
+        /* Rota n caracteres desde el principio */
+        lseek(fd, 0, SEEK_SET);
+        read(fd, buffer, filesize - m);
+
+        /* Escribe los nuevos caracteres */
+        lseek(fd, m, SEEK_SET);
+        write(fd, buffer, filesize - m);
+        lseek(fd, 0, SEEK_SET);
+        write(fd, buffer_n, m);
+    } else {
+        /* Si n es negativo, se rota hacia la izquierda */
+        
+        /* Lee los primeros n caracteres */
+        lseek(fd, 0, SEEK_SET);
+        read(fd, buffer_n, m);
+
+        /* Rota n caracteres desde el final */
+        read(fd, buffer, filesize - m);
+
+        /* Escribe los nuevos caracteres */
+        lseek(fd, 0, SEEK_SET);
+        write(fd, buffer, filesize - m);
+        write(fd, buffer_n, m);
+    }
+
+    free(buffer_n);
+    free(buffer);
     close(fd);
+
     return 0;
 }

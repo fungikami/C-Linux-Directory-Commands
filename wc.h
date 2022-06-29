@@ -1,7 +1,7 @@
 /**
  * wc.h
  * 
- * Autor: Ka Fung (1810492)
+ * Autor: Ka Fung (18-10492)
  * Fecha: 08/07/2020 
  */
 

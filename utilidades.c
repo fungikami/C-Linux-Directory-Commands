@@ -1,7 +1,7 @@
 /**
  * utilidades.c
  * 
- * Autor: Ka Fung (1810492)
+ * Autor: Ka Fung (18-10492)
  * Fecha: 08/07/2020 
  */
  
@@ -17,6 +17,44 @@
 #include "utilidades.h"
 
 #define BUFSIZE 1024
+
+/** 
+ * Extrae la línea de comando de manera dinámica.
+ * Retorno:
+ *      char* con la línea de comando
+ */
+char *get_line() {
+    int n = 100, i = 0;
+    char c = fgetc(stdin);
+    char *line = malloc(sizeof(char) * n);
+    if (!line) return NULL;
+    
+    /* Obtiene caracter por caracter del stdin */
+    while (c != '\n' && c != EOF) {
+        line[i] = c;
+        i++;
+        c = fgetc(stdin);
+
+        /* Si aún queda por scannear pero no hay espacio, realloc */
+        if (i == n) {
+            line = realloc(line, sizeof(char) * (n + 100));
+            if (!line) {
+                free(line);
+                return NULL;
+            }
+            n += 100;
+        }
+    } 
+
+    /* Realloc ajustado el tamaño de la linea */
+    line = realloc(line, sizeof(char) * (i + 1));
+    if (!line) {
+        free(line);
+        return NULL;
+    }
+    line[i] = '\0';
+    return line;
+}
 
 /**
  * Funcion que determina si un archivo es un directorio
@@ -74,6 +112,7 @@ int traverseDir(char* path, int (*fun) (char *path, struct Args* argum), struct 
         return -1;
     } 
     
+    /* Recorre el directorio */
     while ((ent = readdir(dir))) {
         char* e_name = ent->d_name;
         int dots = strcmp(e_name, ".") == 0 || strcmp(e_name, "..") == 0;
@@ -117,6 +156,7 @@ int traverseDir(char* path, int (*fun) (char *path, struct Args* argum), struct 
         free(new_path);
     }
 
+    /* Si trata de una función a ejecutar en directorios */
     if (action_to_dir==1 || action_to_dir==2) {
         if (fun(path, argum) == -1) {
             closedir(dir);

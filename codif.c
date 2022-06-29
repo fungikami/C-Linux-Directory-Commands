@@ -33,7 +33,7 @@ void codif(char *directorioRaiz) {
  *      0 si todo fue correcto, -1 si hubo un error
  */
 int codif_aux(char *path, struct Args *args) {
-    int izq, der;
+    char izq, der;
     int fd = open(path, O_RDWR);
     long m, n, filesize;
 

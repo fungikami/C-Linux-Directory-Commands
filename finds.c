@@ -87,9 +87,9 @@ int ifind_aux(char *path, struct Args *args) {
 }
 
 /**
- * Función que llama la función auxiliar cfind_aux 
- * para buscar los nombres de archivos de un directorio raíz que 
- * contienen la cadena1 dada y que su contenido contenga la cadena2 .
+ * Función que llama la función auxiliar cfind_aux para buscar 
+ * los nombres de archivos de un directorio raíz que contienen 
+ * la cadena1 dada y que su contenido contenga la cadena2 .
  * 
  * Parámetros:
  *      directorioRaiz: ruta del directorio raíz 

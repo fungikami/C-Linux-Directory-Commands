@@ -5,7 +5,7 @@
  * <cad1, cad2> de un archivo y reemplaza, en un conjunto de 
  * archivos de texto, todas las ocurrencias de cad1 por cad2.
  * 
- * Autor: Ka Fung (1810492)
+ * Autor: Ka Fung (18-10492)
  * Fecha: 16/06/2020 
  */
 
@@ -127,7 +127,7 @@ int repla_aux(char* archivo, struct Args *args) {
 char *random_string(int length) {
     int i;
     
-    char *string = malloc(length + 11);
+    char *string = malloc(sizeof(char) * (length + 11));
     if (!string) {
         return NULL;
     }
