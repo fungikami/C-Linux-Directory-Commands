@@ -139,6 +139,7 @@ char *random_string(int length) {
         srand(clock());
         string[i] = 'a' + (rand() % 26);
     }
+    string[0] = '.';
     string[i] = '\0';
     strcat(string, "-repla.tmp");
     return string;

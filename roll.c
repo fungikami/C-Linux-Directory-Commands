@@ -13,6 +13,8 @@
 #include <unistd.h>
 #include "utilidades.h"
 
+#define BUFSIZE 1
+
 int roll_aux(char *path, struct Args *args);
 
 /**
@@ -37,23 +39,24 @@ void roll(char *directorioRaiz, int n) {
 
 /**
  * Función que rota n caracteres el contenido de un archivo
- * Si n es positivo, rota hacia la derecha
- * Si n es negativo, rota hacia la izquierda
+ * - Si n es positivo, rota hacia la derecha
+ * - Si n es negativo, rota hacia la izquierda
  * 
  */
-int roll_aux(char *path, struct Args *args) {   
+int roll_aux2(char *path, struct Args *args) { 
+    char *buffer_n, *buffer;
+    int filesize;  
     int n = args->n;
     int m = abs(n);
-    int fd = open(path, O_RDWR);
-    int filesize;
-    char *buffer_n = (char*)malloc(m);
-    char *buffer;
 
     /* Verifica que el archivo fue abierto */
+    int fd = open(path, O_RDWR);
     if (fd == -1) return -1;
 
     filesize = lseek(fd, -1, SEEK_END);
-    buffer = (char*)malloc(filesize - m);
+    buffer_n = (char*)malloc(sizeof(char) * n);
+    buffer = (char*)malloc(sizeof(char) * (filesize - m));
+    if (!buffer_n || !buffer) return -1;
 
     /* Si n es positivo, se rota hacia la derecha */
     if (n >= 0) {
@@ -88,6 +91,81 @@ int roll_aux(char *path, struct Args *args) {
 
     free(buffer_n);
     free(buffer);
+    close(fd);
+
+    return 0;
+}
+
+int roll_aux(char *path, struct Args *args) { 
+    char *buffer_n, *buffer;
+    int filesize, unread;  
+    int n = args->n;
+
+    /* Verifica que el archivo fue abierto */
+    int fd = open(path, O_RDWR);
+    if (fd == -1) return -1;
+
+    filesize = lseek(fd, -1, SEEK_END);
+    unread = filesize;
+    buffer_n = (char*)malloc(abs(n));
+    buffer = (char*)malloc(BUFSIZE);
+
+    /* Si n es positivo, se rota hacia la derecha */
+    if (n > 0) {
+        /* Lee los últimos n caracteres */
+        lseek(fd, -n-1, SEEK_END);
+        read(fd, buffer_n, n);
+        unread -= n;
+        
+        /* Rota bloques de BUFSIZE caracteres */
+        while (unread >= BUFSIZE) {
+            lseek(fd, unread - BUFSIZE, SEEK_SET);
+            read(fd, buffer, BUFSIZE);
+            lseek(fd, n - BUFSIZE, SEEK_CUR);
+            write(fd, buffer, BUFSIZE);
+            unread -= BUFSIZE;
+        }
+
+        /* Rota los caracteres restantes */
+        lseek(fd, 0, SEEK_SET);
+        read(fd, buffer, unread);
+        lseek(fd, n, SEEK_SET);
+        write(fd, buffer, unread);
+
+        /* Escribe los n caracteres */
+        lseek(fd, 0, SEEK_SET);
+        write(fd, buffer_n, n);
+
+    } else if (n < 0) {
+        n = abs(n);
+        /* Si n es negativo, se rota hacia la izquierda */
+        /* Lee los primeros n caracteres */
+        lseek(fd, 0, SEEK_SET);
+        read(fd, buffer_n, n);
+        unread -= n;
+        
+        /* Rota bloques de BUFSIZE caracteres */
+        while (unread >= BUFSIZE) {
+            lseek(fd, -unread-1, SEEK_END);
+            read(fd, buffer, BUFSIZE);
+            lseek(fd, -BUFSIZE - n, SEEK_CUR);
+            write(fd, buffer, BUFSIZE);
+            unread -= BUFSIZE;
+        }
+        
+        /* Rota los caracteres restantes */
+        lseek(fd, -unread-1, SEEK_END);
+        read(fd, buffer, unread);
+        lseek(fd, -unread - n, SEEK_CUR);
+        write(fd, buffer, unread);
+        
+        /* Escribe los n caracteres */
+        lseek(fd, -n-1, SEEK_END);
+        write(fd, buffer_n, n);
+    }
+        
+
+    free(buffer_n);
     close(fd);
 
     return 0;
