@@ -16,6 +16,7 @@
     };
 
     char *get_line();
+    int is_integer(char *str);
     int is_dir_file(char *path);
     int is_reg_file(char *path);
     int traverseDir(char* path, int (*fun) (char *path, struct Args* argum), struct Args* argum, int action_to_dir);

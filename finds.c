@@ -16,7 +16,6 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include "utilidades.h"
-
 #define BUFSIZE 1024
 
 int find_aux(char *path, struct Args *args);

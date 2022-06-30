@@ -17,8 +17,6 @@
 #include <sys/stat.h>
 #include "utilidades.h"
 
-#define BUFSIZE 1024
-
 /** 
  * Extrae la línea de comando de manera dinámica.
  * Retorno:
@@ -55,6 +53,22 @@ char *get_line() {
     }
     line[i] = '\0';
     return line;
+}
+
+/**
+ * Función que verifica si una cadena es un entero.
+ * Parámetros:
+ *      str: cadena a verificar
+ * Retorno:
+ *      1 si la cadena es un entero, 0 si no lo es
+ */
+int is_integer(char *str) {
+    int i = 0;
+    if (str[i] == '-') i++;
+    for (; str[i]; i++) {
+        if (!isdigit(str[i])) return 0;
+    }
+    return 1;
 }
 
 /**

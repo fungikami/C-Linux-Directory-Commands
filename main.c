@@ -9,6 +9,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <sys/stat.h>
+#include <time.h>
 #include "utilidades.h"
 #include "finds.h"
 #include "repla.h"
@@ -87,17 +88,34 @@ int main(int argc, char **argv) {
 
             wc(dirRaiz);
         } else if (!strcmp(token, "codif")) {
+            clock_t t;
+
             if (strtok(NULL, " ")) {
                 fprintf(stderr, "Error: El comando debe ser de la forma: codif\n");
                 free(str);
                 continue;
             }
 
+            t = clock();
             codif(dirRaiz);
+            t = clock() - t;
+            printf("Tiempo de ejecución: %f segundos\n", ((double) t) / CLOCKS_PER_SEC);
+
+            t = clock();
+            codif2(dirRaiz);
+            t = clock() - t;
+            printf("Tiempo de ejecución: %f segundos\n", ((double) t) / CLOCKS_PER_SEC);
         } else if (!strcmp(token, "roll")) {
             int n = 0;
             char *number = strtok(NULL, " ");
-            if (number) n = atoi(number);
+            if (number) {
+                if (!is_integer(number)) {
+                    fprintf(stderr, "Error: El comando debe ser de la forma: roll [<n>] con n entero.\n");
+                    free(str);
+                    continue;
+                }
+                n = atoi(number);
+            }
 
             roll(dirRaiz, n);
         } else if (!strcmp(token, "exit")) {

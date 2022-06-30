@@ -266,3 +266,58 @@ int cfind(char *path, struct Args *args) {
     close(fd);
     return 0;
 }
+
+
+int roll_aux2(char *path, struct Args *args) { 
+    char *buffer_n, *buffer;
+    int filesize;  
+    int n = args->n;
+    int m = abs(n);
+
+    /* Verifica que el archivo fue abierto */
+    int fd = open(path, O_RDWR);
+    if (fd == -1) return -1;
+
+    filesize = lseek(fd, -1, SEEK_END);
+    buffer_n = (char*)malloc(sizeof(char) * n);
+    buffer = (char*)malloc(sizeof(char) * (filesize - m));
+    if (!buffer_n || !buffer) return -1;
+
+    /* Si n es positivo, se rota hacia la derecha */
+    if (n >= 0) {
+        /* Lee los ultimos n caracteres */
+        lseek(fd, -m-1, SEEK_END);
+        read(fd, buffer_n, m);
+
+        /* Rota n caracteres desde el principio */
+        lseek(fd, 0, SEEK_SET);
+        read(fd, buffer, filesize - m);
+
+        /* Escribe los nuevos caracteres */
+        lseek(fd, m, SEEK_SET);
+        write(fd, buffer, filesize - m);
+        lseek(fd, 0, SEEK_SET);
+        write(fd, buffer_n, m);
+    } else {
+        /* Si n es negativo, se rota hacia la izquierda */
+        
+        /* Lee los primeros n caracteres */
+        lseek(fd, 0, SEEK_SET);
+        read(fd, buffer_n, m);
+
+        /* Rota n caracteres desde el final */
+        read(fd, buffer, filesize - m);
+
+        /* Escribe los nuevos caracteres */
+        lseek(fd, 0, SEEK_SET);
+        write(fd, buffer, filesize - m);
+        write(fd, buffer_n, m);
+    }
+
+    free(buffer_n);
+    free(buffer);
+    close(fd);
+
+    return 0;
+}
+

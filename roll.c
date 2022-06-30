@@ -12,8 +12,7 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include "utilidades.h"
-
-#define BUFSIZE 1
+#define BUFSIZE 1024
 
 int roll_aux(char *path, struct Args *args);
 
@@ -38,65 +37,18 @@ void roll(char *directorioRaiz, int n) {
 }
 
 /**
- * Función que rota n caracteres el contenido de un archivo
- * - Si n es positivo, rota hacia la derecha
- * - Si n es negativo, rota hacia la izquierda
+ * Función que rota n caracteres el contenido de un archivo.
+ * - Si n es positivo, rota hacia la derecha.
+ * - Si n es negativo, rota hacia la izquierda.
  * 
+ * Parámetros:
+ *      path: ruta del archivo a rotar el contenido.
+ *      args: puntero a una estructura Args que contiene 
+ *            el número de caracteres a rotar.
+ * Retorno:
+ *      0 si todo fue correcto, -1 si hubo un error.
  */
-int roll_aux2(char *path, struct Args *args) { 
-    char *buffer_n, *buffer;
-    int filesize;  
-    int n = args->n;
-    int m = abs(n);
-
-    /* Verifica que el archivo fue abierto */
-    int fd = open(path, O_RDWR);
-    if (fd == -1) return -1;
-
-    filesize = lseek(fd, -1, SEEK_END);
-    buffer_n = (char*)malloc(sizeof(char) * n);
-    buffer = (char*)malloc(sizeof(char) * (filesize - m));
-    if (!buffer_n || !buffer) return -1;
-
-    /* Si n es positivo, se rota hacia la derecha */
-    if (n >= 0) {
-        /* Lee los ultimos n caracteres */
-        lseek(fd, -m-1, SEEK_END);
-        read(fd, buffer_n, m);
-
-        /* Rota n caracteres desde el principio */
-        lseek(fd, 0, SEEK_SET);
-        read(fd, buffer, filesize - m);
-
-        /* Escribe los nuevos caracteres */
-        lseek(fd, m, SEEK_SET);
-        write(fd, buffer, filesize - m);
-        lseek(fd, 0, SEEK_SET);
-        write(fd, buffer_n, m);
-    } else {
-        /* Si n es negativo, se rota hacia la izquierda */
-        
-        /* Lee los primeros n caracteres */
-        lseek(fd, 0, SEEK_SET);
-        read(fd, buffer_n, m);
-
-        /* Rota n caracteres desde el final */
-        read(fd, buffer, filesize - m);
-
-        /* Escribe los nuevos caracteres */
-        lseek(fd, 0, SEEK_SET);
-        write(fd, buffer, filesize - m);
-        write(fd, buffer_n, m);
-    }
-
-    free(buffer_n);
-    free(buffer);
-    close(fd);
-
-    return 0;
-}
-
-int roll_aux(char *path, struct Args *args) { 
+ int roll_aux(char *path, struct Args *args) { 
     char *buffer_n, *buffer;
     int filesize, unread;  
     int n = args->n;
@@ -106,15 +58,16 @@ int roll_aux(char *path, struct Args *args) {
     if (fd == -1) return -1;
 
     filesize = lseek(fd, -1, SEEK_END);
-    unread = filesize;
     buffer_n = (char*)malloc(abs(n));
     buffer = (char*)malloc(BUFSIZE);
+    if (!buffer_n || !buffer || filesize == -1) return -1;
 
+    unread = filesize;
     /* Si n es positivo, se rota hacia la derecha */
     if (n > 0) {
         /* Lee los últimos n caracteres */
-        lseek(fd, -n-1, SEEK_END);
-        read(fd, buffer_n, n);
+        if (lseek(fd, -n-1, SEEK_END) == -1) return -1;
+        if (read(fd, buffer_n, n) == -1) return -1;
         unread -= n;
         
         /* Rota bloques de BUFSIZE caracteres */
@@ -137,8 +90,9 @@ int roll_aux(char *path, struct Args *args) {
         write(fd, buffer_n, n);
 
     } else if (n < 0) {
-        n = abs(n);
         /* Si n es negativo, se rota hacia la izquierda */
+        n = abs(n);
+
         /* Lee los primeros n caracteres */
         lseek(fd, 0, SEEK_SET);
         read(fd, buffer_n, n);
@@ -148,7 +102,7 @@ int roll_aux(char *path, struct Args *args) {
         while (unread >= BUFSIZE) {
             lseek(fd, -unread-1, SEEK_END);
             read(fd, buffer, BUFSIZE);
-            lseek(fd, -BUFSIZE - n, SEEK_CUR);
+            lseek(fd, -BUFSIZE-n, SEEK_CUR);
             write(fd, buffer, BUFSIZE);
             unread -= BUFSIZE;
         }
@@ -156,7 +110,7 @@ int roll_aux(char *path, struct Args *args) {
         /* Rota los caracteres restantes */
         lseek(fd, -unread-1, SEEK_END);
         read(fd, buffer, unread);
-        lseek(fd, -unread - n, SEEK_CUR);
+        lseek(fd, -unread-n, SEEK_CUR);
         write(fd, buffer, unread);
         
         /* Escribe los n caracteres */
@@ -164,8 +118,8 @@ int roll_aux(char *path, struct Args *args) {
         write(fd, buffer_n, n);
     }
         
-
     free(buffer_n);
+    free(buffer);
     close(fd);
 
     return 0;
