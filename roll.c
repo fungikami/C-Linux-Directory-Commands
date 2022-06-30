@@ -1,3 +1,12 @@
+/**
+ * roll.c
+ * Implementación del comando roll, en la cual rota n caracteres el contenido
+ * de cada archivo regular desde un directorio raíz.
+ *
+ * Autor: Ka Fung (18-10492)
+ * Fecha: 08/07/2020 
+ */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <fcntl.h>
@@ -41,10 +50,7 @@ int roll_aux(char *path, struct Args *args) {
     char *buffer;
 
     /* Verifica que el archivo fue abierto */
-    if (fd == -1) {
-        fprintf(stderr, "Error al abrir el archivo %s\n", path);
-        return -1;
-    }
+    if (fd == -1) return -1;
 
     filesize = lseek(fd, -1, SEEK_END);
     buffer = (char*)malloc(filesize - m);

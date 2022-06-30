@@ -1,3 +1,12 @@
+/**
+ * codif.c
+ * Implementación del comando codif, en la cual cada archivo regular, 
+ * que se encuentre en el directorio raíz, se invierte su contenido.
+ *
+ * Autor: Ka Fung (18-10492)
+ * Fecha: 08/07/2020 
+ */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <fcntl.h>

@@ -34,7 +34,12 @@ void repla(char *directorioRaiz, char *file) {
     if (!args) {
         fprintf(stderr, "Error al reservar memoria\n");
     }
+    
     args->lista = extraer_palabras(file);
+    if (args->lista == NULL) {
+        fprintf(stderr, "Error al extraer las palabras del archivo %s\n", file);
+    }
+
     if (traverseDir(directorioRaiz, repla_aux, args, 0) == -1) {
         fprintf(stderr, "Error al ejecutar repla.\n");
     }
@@ -128,9 +133,7 @@ char *random_string(int length) {
     int i;
     
     char *string = malloc(sizeof(char) * (length + 11));
-    if (!string) {
-        return NULL;
-    }
+    if (!string) return NULL;
 
     for (i = 0; i < length; i++) {
         srand(clock());
@@ -153,9 +156,7 @@ struct Nodo* extraer_palabras(char* archivo) {
     struct Nodo* lista_cabeza = crear_lista();
 
     FILE* ptr = fopen(archivo, "r");
-    if (!ptr) {
-        return NULL;
-    }
+    if (!ptr) return NULL;
 
     /* Extrae las palabras y las separa según el char ':' */
     while(fscanf(ptr, "%[^:]:%[^\n]\n", temp1, temp2) != EOF) {

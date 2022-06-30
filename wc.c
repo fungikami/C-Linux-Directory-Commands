@@ -1,5 +1,8 @@
 /**
  * wc.c
+ * Implementación del comando wc, en la cual imprime el 
+ * total de líneas y caracteres de los archivos regulares 
+ * que contiene en forma recursiva, incluyendo la raíz del árbol
  * 
  * Autor: Ka Fung (18-10492)
  * Fecha: 08/07/2020 

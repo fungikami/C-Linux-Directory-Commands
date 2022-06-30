@@ -1,3 +1,14 @@
+/**
+ * finds.c
+ * Implementación de los comandos find, ifind y cfind, en la cual cada imprime los
+ * los archivos que tienen en su nombre una cadena dada. En caso de ser ifind, es 
+ * no case sensitive. En caso de ser cfind, revisa que el contenido del archivo 
+ * tenga la segunda cadena dada.
+ *
+ * Autor: Ka Fung (18-10492)
+ * Fecha: 08/07/2020 
+ */
+
 #define _GNU_SOURCE
 #include <stdio.h>
 #include <string.h>
@@ -13,9 +24,8 @@ int ifind_aux(char *path, struct Args *args);
 int cfind_aux(char *path, struct Args *args);
 
 /**
- * Función que llama la función auxiliar find_aux 
- * para buscar los nombres de archivos de un directorio raíz
- * que contienen la cadena dada.
+ * Función que llama la función auxiliar find_aux para buscar los nombres de 
+ * archivos de un directorio raíz que contienen la cadena dada (case sensitive).
  * 
  * Parámetros:
  *      directorioRaiz: ruta del directorio raíz 
@@ -51,9 +61,8 @@ int find_aux(char *path, struct Args *args) {
 }
 
 /**
- * Función que llama la función auxiliar ifind_aux 
- * para buscar los nombres de archivos de un directorio raíz
- * que contienen la cadena dada (no case sensitive).
+ * Función que llama la función auxiliar ifind_aux para buscar los nombres de 
+ * archivos de un directorio raíz que contienen la cadena dada (no case sensitive).
  * 
  * Parámetros:
  *      directorioRaiz: ruta del directorio raíz 
@@ -107,13 +116,14 @@ void cfind(char *directorioRaiz, char *cadena1, char *cadena2) {
 }
 
 /**
- * Función que revisa si el nombre del archivo contiene una cadena dada (case sensitive).
- * y si el contenido contiene string2.
+ * Función que revisa si el nombre del archivo contiene una cadena dada 
+ * (case sensitive) y verifica si el contenido del archivo contiene string2.
+ *
  * Parámetros:
  *      path: ruta del archivo
  *      args: argumentos necesarios para la funcion 
  * Retorno:
- *      0 si no contiene la cadena, 1 si contiene la cadena
+ *      0 si no contiene la cadena, 1 si contiene la cadena, -1 si hubo un error
  */
 int cfind_aux(char *path, struct Args *args) {
     char *string = args->cadena1;

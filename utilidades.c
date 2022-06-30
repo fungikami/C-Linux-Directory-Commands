@@ -1,5 +1,6 @@
 /**
  * utilidades.c
+ * Implementación de diversas funciones que se harán uso durnate el programa.
  * 
  * Autor: Ka Fung (18-10492)
  * Fecha: 08/07/2020 
@@ -57,12 +58,12 @@ char *get_line() {
 }
 
 /**
- * Funcion que determina si un archivo es un directorio
+ * Función que determina si un archivo es un directorio.
  * 
  * Parámetros:
- *      path: ruta del archivo
+ *      path: ruta del archivo.
  * Retorno:
- *      No nulo es una archivo de directorio, NULL en caso contrario
+ *      No nulo es una archivo de directorio, NULL en caso contrario.
  */
 int is_dir_file(char *path) {
     struct stat st;
@@ -74,12 +75,12 @@ int is_dir_file(char *path) {
 }
 
 /**
- * Funcion que determina si un archivo es regular
+ * Función que determina si un archivo es regular.
  * 
  * Parámetros:
- *      path: ruta del archivo
+ *      path: ruta del archivo.
  * Retorno:
- *      No nulo si es un archivo regular, NULL en caso contrario
+ *      No nulo si es un archivo regular, NULL en caso contrario.
  */
 int is_reg_file(char *path) {
     struct stat st;
@@ -92,15 +93,15 @@ int is_reg_file(char *path) {
 }  
 
 /**
- * Función que recorre recursivamente 
+ * Función que recorre recursivamente desde un directorio dado y ejecuta una función indicada.
  * 
  * Parámetros:
- *      fun: función a ejecutar por cada archivo
- *      args: argumentos para la función
+ *      fun: función a ejecutar por cada archivo.
+ *      args: argumentos de la función.
  *      action_to_dir: indica si la función a ejecutar es para un directorio y/o un archivo
- *      0 si es solo un archivo, 1 si es un directorio, 2 si es un archivo y un directorio
+ *          (0 si es para regulares, 1 si es para directorios, 2 si es para ambos casos)
  * Retorno:
- *      0 si todo fue correcto, -1 si hubo un error
+ *      0 si todo fue correcto, -1 si hubo un error durante la ejecución.
  */
 int traverseDir(char* path, int (*fun) (char *path, struct Args* argum), struct Args* argum, int action_to_dir) {
     DIR* dir;
