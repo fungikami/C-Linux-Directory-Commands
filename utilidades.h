@@ -7,6 +7,7 @@
 
 #ifndef __UTILIDADES_H__
     #define __UTILIDADES_H__
+    #define BUFSIZE 256
 
     struct Args {
         char* cadena1;

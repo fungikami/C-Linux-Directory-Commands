@@ -16,8 +16,6 @@
 #include <dirent.h>
 #include "utilidades.h"
 
-#define BUFSIZE 1024
-
 int wc_aux(char *path, int *nlines, int *nchars);
 int count_lines_chars(char *path, int *lines, int *chars);
 

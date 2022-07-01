@@ -127,18 +127,18 @@ int traverseDir(char* path, int (*fun) (char *path, struct Args* argum), struct 
         return -1;
     } 
     
-    /* Recorre el directorio */
+    /* Recorre el contenido del directorio */
     while ((ent = readdir(dir))) {
         char* e_name = ent->d_name;
         int dots = strcmp(e_name, ".") == 0 || strcmp(e_name, "..") == 0;
 
         /* Concatena la nueva direccion */
-        char* new_path = malloc(strlen(path) + strlen(e_name) + 2);
+        char* new_path = malloc(sizeof(char) * (strlen(path) + strlen(e_name) + 2));
         strcpy(new_path, path);
         strcat(new_path, "/");
         strcat(new_path, e_name);
 
-        /* Recorre recursivamente por cada directorio */
+        /* Se revisa el contenido del archivo, evitando aquellos que terminen en '.' o '..' */
         if (!dots) {
             int is_dir = is_dir_file(new_path);
             if (is_dir == -1) {
@@ -147,7 +147,7 @@ int traverseDir(char* path, int (*fun) (char *path, struct Args* argum), struct 
             }
 
             if (is_dir) {
-                /* Si es un directorio, sigue recorriendo */
+                /* Si es un directorio, se sigue recorriendo recursivamente */
                 if (traverseDir(new_path, fun, argum, action_to_dir) == -1) {
                     free(new_path);
                     continue;
@@ -157,12 +157,10 @@ int traverseDir(char* path, int (*fun) (char *path, struct Args* argum), struct 
                 if (is_reg == -1) return -1;
 
                 /* Si es un archivo regular, llama la función */
-                if (is_reg) {
-                    if (action_to_dir==0 || action_to_dir==2) {
-                        if (fun(new_path, argum) == -1) {
-                            free(new_path);
-                            continue;
-                        }
+                if (is_reg && (action_to_dir==0 || action_to_dir==2)) {
+                    if (fun(new_path, argum) == -1) {
+                        free(new_path);
+                        continue;
                     }
                 }
             }

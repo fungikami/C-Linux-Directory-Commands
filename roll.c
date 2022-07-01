@@ -12,7 +12,6 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include "utilidades.h"
-#define BUFSIZE 1024
 
 int roll_aux(char *path, struct Args *args);
 
@@ -58,8 +57,8 @@ void roll(char *directorioRaiz, int n) {
     if (fd == -1) return -1;
 
     filesize = lseek(fd, -1, SEEK_END);
-    buffer_n = (char*)malloc(abs(n));
-    buffer = (char*)malloc(BUFSIZE);
+    buffer_n = (char*)malloc(sizeof(char) * abs(n));
+    buffer = (char*)malloc(sizeof(char) * BUFSIZE);
     if (!buffer_n || !buffer || filesize == -1) return -1;
 
     unread = filesize;

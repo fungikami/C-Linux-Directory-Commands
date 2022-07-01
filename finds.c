@@ -16,7 +16,6 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include "utilidades.h"
-#define BUFSIZE 1024
 
 int find_aux(char *path, struct Args *args);
 int ifind_aux(char *path, struct Args *args);
@@ -77,7 +76,7 @@ void ifind(char *directorioRaiz, char *cadena) {
 }
 
 /**
- * Función que revisa si el nombre del archivo contiene una cadena dada (case insensitive).
+ * Función que revisa si el nombre del archivo contiene una cadena dada (no case sensitive).
  * 
  * Parámetros:
  *      path: ruta del archivo

@@ -1,6 +1,28 @@
 /**
  * main.c
- * 
+ *
+ * Implementación del interpretador de comandos simple, en que se ofrecen un
+ * conjunto de comandos internos al invocarse con ./myutil <directorioRaiz>.
+ *
+ * Comandos:
+ *      find [<cadena>]: imprime los nombres de archivos que tienen en su nombre
+ *            la cadena <cadena>, case sensitive.
+
+ *      ifind [<cadena>]: igual que find, pero no case sensitive.
+
+ *      cfind <cadena1> <cadena2>: igual que find, pero adicionalmente verifica
+ *            contenido del archivo tenga la cadena <cadena2>.
+
+ *      repla <file>: dado un archivo de pares de cadenas, sustituye en los 
+ *            archivos regulares las ocurrencias de dichas cadenas de caracteres.
+
+ *      wc: imprime por directorio el total de líneas y caracteres de los archivos 
+ *              regulares.
+
+ *      codif: invierte el contenido de los archivos regulares.
+ 
+ *      roll [<n>]: rota en n caracteres el contenido de cada archivo regular.
+ *      
  * Autor: Ka Fung (18-10492)
  * Fecha: 08/07/2020 
  */
@@ -9,7 +31,6 @@
 #include <string.h>
 #include <stdlib.h>
 #include <sys/stat.h>
-#include <time.h>
 #include "utilidades.h"
 #include "finds.h"
 #include "repla.h"
@@ -40,7 +61,7 @@ int main(int argc, char **argv) {
         char * token;
         printf("myutil> ");
         str = get_line();
-        if (!str) fprintf(stderr, "Error al leer la línea\n");
+        if (!str) fprintf(stderr, "Error al leer la línea de comando\n");
 
         /* Separa los argumentos de la línea de comando */
         token = strtok(str, " ");
@@ -88,23 +109,13 @@ int main(int argc, char **argv) {
 
             wc(dirRaiz);
         } else if (!strcmp(token, "codif")) {
-            clock_t t;
-
             if (strtok(NULL, " ")) {
                 fprintf(stderr, "Error: El comando debe ser de la forma: codif\n");
                 free(str);
                 continue;
             }
 
-            t = clock();
             codif(dirRaiz);
-            t = clock() - t;
-            printf("Tiempo de ejecución: %f segundos\n", ((double) t) / CLOCKS_PER_SEC);
-
-            t = clock();
-            codif2(dirRaiz);
-            t = clock() - t;
-            printf("Tiempo de ejecución: %f segundos\n", ((double) t) / CLOCKS_PER_SEC);
         } else if (!strcmp(token, "roll")) {
             int n = 0;
             char *number = strtok(NULL, " ");

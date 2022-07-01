@@ -12,7 +12,6 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include "utilidades.h"
-#define BUFSIZE 1024
 
 int codif_aux(char *path, struct Args *args);
 
@@ -35,14 +34,16 @@ void codif(char *directorioRaiz) {
 }
 
 /**
- * Función que invierte el contenido de un archivo
+ * Función que invierte el contenido de un archivo, es decir, 
+ * intercambia el primer y último carácter, el segundo y penúltimo, 
+ * y así hasta que todos los caracteres hayan sido intercambiados.
  * 
  * Parámetros:
  *      path: ruta del archivo a invertir el contenido
  * Retorno:
  *      0 si todo fue correcto, -1 si hubo un error
  */
-int codif_aux(char *path, struct Args *args) {
+int codif_aux2(char *path, struct Args *args) {
     char izq, der;
     int fd = open(path, O_RDWR);
     long m, n, filesize;
@@ -80,7 +81,7 @@ int codif_aux(char *path, struct Args *args) {
     return 0;
 }
 
-int codif_aux2(char *path, struct Args *args) {
+int codif_aux(char *path, struct Args *args) {
     int fd = open(path, O_RDWR);
     long m, n, filesize;
 
@@ -101,8 +102,8 @@ int codif_aux2(char *path, struct Args *args) {
         toread = n;
         if (toread > BUFSIZE) toread = BUFSIZE;
         
-        buffer1 = (char*)malloc(toread);
-        buffer2 = (char*)malloc(toread);
+        buffer1 = (char*)malloc(sizeof(char) * toread);
+        buffer2 = (char*)malloc(sizeof(char) * toread);
         if (!buffer1 || !buffer2) return -1;
 
         /* Lee el bloque más izquierdo a intercambiar */
