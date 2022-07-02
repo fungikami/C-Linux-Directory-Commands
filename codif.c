@@ -40,54 +40,63 @@ void codif(char *directorioRaiz) {
  *      0 si todo fue correcto, -1 si hubo un error
  */
 int codif_aux(char *path, void *args) {
-    char *buffer1, *buffer2;
+    char *lbuffer, *rbuffer;
     int fd = open(path, O_RDWR), unread, n;
 
     /* Verifica que el archivo fue abierto */
     if (fd == -1) return -1;
 
     /* Reserva memoria para los bloques a intercambiar */
-    buffer1 = (char*)malloc(sizeof(char) * BUFSIZ);
-    buffer2 = (char*)malloc(sizeof(char) * BUFSIZ);
-    if (!buffer1 || !buffer2) {
-        free(buffer1);
-        free(buffer2);
+    lbuffer = (char*)malloc(sizeof(char) * BUFSIZ);
+    rbuffer = (char*)malloc(sizeof(char) * BUFSIZ);
+    if (!lbuffer || !rbuffer) {
+        free(lbuffer);
+        free(rbuffer);
         close(fd);
         return -1;
     }
 
     /* Determinar mitad del archivo */
-    n = lseek(fd, 0, SEEK_END) / 2;
-    lseek(fd, 0, SEEK_SET);
+    n = lseek(fd, 0, SEEK_END) / 2
+    if (lseek(fd, 0, SEEK_SET) == -1 || n == -1) {
+        free(lbuffer);
+        free(rbuffer);
+        close(fd);
+        return -1;
+    }
 
     unread = n;
     while (unread) {
         /* Determinar el tamaño del bloque a leer */
-        int i, offset = n - unread, toread = unread;
+        int i, lpos, rpos, toread = unread; 
         if (toread >= BUFSIZ) toread = BUFSIZ;
+
+        /* Determinar la posición del puntero */
+        lpos = n-unread;
+        rpos = -toread-lpos;
         
         /* Lee el bloque más izquierdo a intercambiar */
-        lseek(fd, offset, SEEK_SET);
-        read(fd, buffer1, toread);
+        lseek(fd, lpos, SEEK_SET);
+        read(fd, lbuffer, toread);
 
         /* Lee el bloque más derecho a intercambiar */
-        lseek(fd, -toread-offset, SEEK_END);
-        read(fd, buffer2, toread);
+        lseek(fd, rpos, SEEK_END);
+        read(fd, rbuffer, toread);
 
         /* Intercambia el contenido de los bloques */
         for (i = 0; i < toread; i++) {
-            char temp = buffer1[i];
-            buffer1[i] = buffer2[toread - i - 1];
-            buffer2[toread - i - 1] = temp;
+            char temp = lbuffer[i];
+            lbuffer[i] = rbuffer[toread - i - 1];
+            rbuffer[toread - i - 1] = temp;
         }
 
         /* Escribe el bloque intercambiado más izquierdo */
-        lseek(fd, offset, SEEK_SET);
-        write(fd, buffer1, toread);
+        lseek(fd, lpos, SEEK_SET);
+        write(fd, lbuffer, toread);
 
         /* Escribe el bloque intercambiado más derecho */
-        lseek(fd, -toread-offset, SEEK_END);
-        write(fd, buffer2, toread);
+        lseek(fd, rpos, SEEK_END);
+        write(fd, rbuffer, toread);
         
         unread -= toread;
     }

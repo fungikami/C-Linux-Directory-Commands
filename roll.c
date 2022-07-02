@@ -42,25 +42,29 @@ void roll(char *directorioRaiz, int n) {
  *      0 si todo fue correcto, -1 si hubo un error.
  */
  int roll_aux(char *path, void *args) { 
-    char *buffer_n, *buffer;
-    int unread;  
-    int n = *(int *) args;
+    char *nbuffer, *buffer;
+    int unread, n = *(int *) args;
 
     /* Verifica que el archivo fue abierto */
     int fd = open(path, O_RDWR);
     if (fd == -1) return -1;
 
     /* Reserva memoria para los bloques a rotar */
-    buffer_n = (char*)malloc(sizeof(char) * abs(n));
+    nbuffer = (char*)malloc(sizeof(char) * abs(n));
     buffer = (char*)malloc(sizeof(char) * BUFSIZ);
     unread = lseek(fd, 0, SEEK_END);
-    if (!buffer_n || !buffer || unread == -1) return -1;
+    if (!nbuffer || !buffer || unread == -1) {
+        free(nbuffer);
+        free(buffer);
+        close(fd);
+        return -1;
+    }
 
     /* Si n es positivo, se rota hacia la derecha */
     if (n > 0) {
         /* Lee los últimos n caracteres */
         if (lseek(fd, -n, SEEK_END) == -1) return -1;
-        if (read(fd, buffer_n, n) == -1) return -1;
+        if (read(fd, nbuffer, n) == -1) return -1;
         unread -= n;
         
         /* Rota bloques de BUFSIZ caracteres */
@@ -81,7 +85,7 @@ void roll(char *directorioRaiz, int n) {
 
         /* Escribe los n caracteres */
         lseek(fd, 0, SEEK_SET);
-        write(fd, buffer_n, n);
+        write(fd, nbuffer, n);
 
     } else if (n < 0) {
         /* Si n es negativo, se rota hacia la izquierda */
@@ -89,7 +93,7 @@ void roll(char *directorioRaiz, int n) {
 
         /* Lee los primeros n caracteres */
         lseek(fd, 0, SEEK_SET);
-        read(fd, buffer_n, n);
+        read(fd, nbuffer, n);
         unread -= n;
         
         /* Rota bloques de BUFSIZ caracteres */
@@ -107,10 +111,10 @@ void roll(char *directorioRaiz, int n) {
         
         /* Escribe los n caracteres */
         lseek(fd, -n, SEEK_END);
-        write(fd, buffer_n, n);
+        write(fd, nbuffer, n);
     }
         
-    free(buffer_n);
+    free(nbuffer);
     free(buffer);
     close(fd);
 
