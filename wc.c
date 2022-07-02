@@ -24,11 +24,11 @@ int count_lines_chars(char *path, int *lines, int *chars);
  * para contar las lineas y caracteres desde un directorio raíz.
  * 
  * Parámetros:
- *      directorioRaiz: ruta del directorio raíz 
+ *      dir_raiz: ruta del directorio raíz 
  */
-void wc(char *directorioRaiz) {
+void wc(char *dir_raiz) {
     int lineas, chars;
-    if (wc_aux(directorioRaiz, &lineas, &chars) == -1) {
+    if (wc_aux(dir_raiz, &lineas, &chars) == -1) {
         fprintf(stderr, "Error al ejecutar wc.\n");
     }
 }

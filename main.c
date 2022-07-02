@@ -39,7 +39,7 @@
 #include "roll.h"
 
 int main(int argc, char **argv) {
-    char *dirRaiz;
+    char *dir_raiz;
     struct stat st;
 
     /* Verifica que se reciba el directorio raiz */
@@ -49,16 +49,15 @@ int main(int argc, char **argv) {
     }
 
     /* Verifica que el directorio raiz pueda ser abierto */
-    dirRaiz = argv[1];
-    if (stat(dirRaiz, &st) == -1) {
-        printf("Error: El directorio raiz %s no puede ser abierto\n", dirRaiz);
+    dir_raiz = argv[1];
+    if (stat(dir_raiz, &st) == -1) {
+        printf("Error: El directorio raiz %s no puede ser abierto\n", dir_raiz);
         return 1;
     }
 
     /* Pide los comandos a ejecutar */
     while (1) {
-        char separator = ' ';
-        char *cadena, *comando;
+        char *cadena, *comando, separator = ' ';
         printf("myutil> ");
         comando = get_line();
 
@@ -77,10 +76,10 @@ int main(int argc, char **argv) {
         /* Ejecuta la función correspondiente según el comando invocado */
         if (!strcmp(comando, "find")) {
             remove_quotes(cadena);
-            find(dirRaiz, cadena);
+            find(dir_raiz, cadena);
         } else if (!strcmp(comando, "ifind")) {
             remove_quotes(cadena);
-            ifind(dirRaiz, cadena);
+            ifind(dir_raiz, cadena);
         } else if (!strcmp(comando, "cfind")) {
             char *cadena2;
             if (!cadena || !(cadena2 = strchr(cadena, separator))) {
@@ -90,28 +89,28 @@ int main(int argc, char **argv) {
             }
             *cadena2 = '\0';
             cadena2++;
-            cfind(dirRaiz, cadena, cadena2);
+            cfind(dir_raiz, cadena, cadena2);
         } else if (!strcmp(comando, "repla")) {
             if (!cadena) {
                 fprintf(stderr, "Error: El comando debe ser de la forma: repla <file>\n");
                 free(comando);
                 continue;
             }
-            repla(dirRaiz, cadena);
+            repla(dir_raiz, cadena);
         } else if (!strcmp(comando, "wc")) {
             if (cadena) {
                 fprintf(stderr, "Error: El comando debe ser de la forma: wc\n");
                 free(comando);
                 continue;
             }
-            wc(dirRaiz);
+            wc(dir_raiz);
         } else if (!strcmp(comando, "codif")) {
             if (cadena) {
                 fprintf(stderr, "Error: El comando debe ser de la forma: codif\n");
                 free(comando);
                 continue;
             }
-            codif(dirRaiz);
+            codif(dir_raiz);
         } else if (!strcmp(comando, "roll")) {
             int n = 0;
             char *number = cadena;
@@ -123,7 +122,7 @@ int main(int argc, char **argv) {
                 }
                 n = atoi(number);
             }
-            roll(dirRaiz, n);
+            roll(dir_raiz, n);
         } else if (!strcmp(comando, "exit")) {
             free(comando);
             break;

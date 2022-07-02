@@ -26,17 +26,17 @@ struct Nodo *extraer_palabras(char *archivo);
  * archivos de un directorio raíz dado.
  * 
  * Parámetros:
- *      directorioRaiz: ruta del directorio raíz
+ *      dir_raiz: ruta del directorio raíz
  *      file: lista de pares de cadenas de caracteres
  */
-void repla(char *directorioRaiz, char *file) {
+void repla(char *dir_raiz, char *file) {
     struct Nodo *lista = extraer_palabras(file);
     if (!lista) {
         fprintf(stderr, "Error al extraer las palabras del archivo %s\n", file);
         return;
     }
 
-    if (traverseDir(directorioRaiz, repla_aux, lista, 0) == -1) {
+    if (traverse_dir(dir_raiz, repla_aux, lista, 0) == -1) {
         fprintf(stderr, "Error al ejecutar repla.\n");
     }
     

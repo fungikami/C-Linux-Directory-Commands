@@ -20,11 +20,11 @@ int roll_aux(char *path, void *args);
  * caracteres del contenido de los archivos de un directorio raíz.
  * 
  * Parámetros:
- *      directorioRaiz: ruta del directorio raíz 
+ *      dir_raiz: ruta del directorio raíz 
  *      n: número de caracteres a rotar
  */
-void roll(char *directorioRaiz, int n) {
-    if (traverseDir(directorioRaiz, roll_aux, &n, 0) == -1) {
+void roll(char *dir_raiz, int n) {
+    if (traverse_dir(dir_raiz, roll_aux, &n, 0) == -1) {
         fprintf(stderr, "Error al ejecutar roll.\n");
     }
 }

@@ -8,5 +8,5 @@
 #ifndef __ROLL_H__
     #define __ROLL_H__
 
-    void roll(char *directorioRaiz, int n);
+    void roll(char *dir_raiz, int n);
 #endif

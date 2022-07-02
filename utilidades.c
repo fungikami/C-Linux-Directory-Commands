@@ -127,12 +127,12 @@ int is_reg_file(char *path) {
  * Parámetros:
  *      fun: función a ejecutar por cada archivo.
  *      args: argumentos de la función.
- *      action_to_dir: indica si la función a ejecutar es para un directorio y/o un archivo
+ *      action: indica si la función a ejecutar es para un directorio y/o un archivo
  *          (0 si es para regulares, 1 si es para directorios, 2 si es para ambos casos)
  * Retorno:
  *      0 si todo fue correcto, -1 si hubo un error durante la ejecución.
  */
-int traverseDir(char* path, int (*fun) (char *, void *), void *argum, int action_to_dir) {
+int traverse_dir(char* path, int (*fun) (char *, void *), void *argum, int action) {
     DIR* dir;
     struct dirent* ent;
 
@@ -163,7 +163,7 @@ int traverseDir(char* path, int (*fun) (char *, void *), void *argum, int action
 
             if (is_dir) {
                 /* Si es un directorio, se sigue recorriendo recursivamente */
-                if (traverseDir(new_path, fun, argum, action_to_dir) == -1) {
+                if (traverse_dir(new_path, fun, argum, action) == -1) {
                     free(new_path);
                     continue;
                 }
@@ -172,7 +172,7 @@ int traverseDir(char* path, int (*fun) (char *, void *), void *argum, int action
                 if (is_reg == -1) return -1;
 
                 /* Si es un archivo regular, llama la función */
-                if (is_reg && (action_to_dir==0 || action_to_dir==2)) {
+                if (is_reg && (action==0 || action==2)) {
                     if (fun(new_path, argum) == -1) {
                         free(new_path);
                         continue;
@@ -185,7 +185,7 @@ int traverseDir(char* path, int (*fun) (char *, void *), void *argum, int action
     }
 
     /* Si trata de una función a ejecutar en directorios */
-    if (action_to_dir==1 || action_to_dir==2) {
+    if (action==1 || action==2) {
         if (fun(path, argum) == -1) {
             closedir(dir);
             return -1;

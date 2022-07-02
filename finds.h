@@ -8,7 +8,7 @@
 #ifndef __FINDS_H__
     #define __FINDS_H__
 
-    void find(char *directorioRaiz, char *cadena);
-    void ifind(char *directorioRaiz, char *cadena);
-    void cfind(char *directorioRaiz, char *cadena1, char *cadena2);
+    void find(char *dir_raiz, char *cadena);
+    void ifind(char *dir_raiz, char *cadena);
+    void cfind(char *dir_raiz, char *cadena1, char *cadena2);
 #endif

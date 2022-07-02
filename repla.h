@@ -8,5 +8,5 @@
 #ifndef __REPLA_H__
     #define __REPLA_H__
 
-    void repla(char *directorioRaiz, char *file);
+    void repla(char *dir_raiz, char *file);
 #endif

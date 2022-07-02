@@ -8,5 +8,5 @@
 #ifndef __WC_H__
     #define __WC_H__
 
-    void wc(char *directorioRaiz);
+    void wc(char *dir_raiz);
 #endif

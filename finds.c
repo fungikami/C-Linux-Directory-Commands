@@ -26,11 +26,11 @@ int cfind_aux(char *path, void *args);
  * archivos de un directorio raíz que contienen la cadena dada (case sensitive).
  * 
  * Parámetros:
- *      directorioRaiz: ruta del directorio raíz.
+ *      dir_raiz: ruta del directorio raíz.
  */
-void find(char *directorioRaiz, char *cadena) {
-    if (traverseDir(directorioRaiz, find_aux, cadena, 2) == -1) {
-        fprintf(stderr, "Error al ejecutar ifind con el archivo %s\n", directorioRaiz);
+void find(char *dir_raiz, char *cadena) {
+    if (traverse_dir(dir_raiz, find_aux, cadena, 2) == -1) {
+        fprintf(stderr, "Error al ejecutar ifind con el archivo %s\n", dir_raiz);
     }
 }
 
@@ -57,11 +57,11 @@ int find_aux(char *path, void *args) {
  * archivos de un directorio raíz que contienen la cadena dada (no case sensitive).
  * 
  * Parámetros:
- *      directorioRaiz: ruta del directorio raíz 
+ *      dir_raiz: ruta del directorio raíz 
  */
-void ifind(char *directorioRaiz, char *cadena) {
-    if (traverseDir(directorioRaiz, ifind_aux, cadena, 2) == -1) {
-        fprintf(stderr, "Error al ejecutar ifind con el archivo %s\n", directorioRaiz);
+void ifind(char *dir_raiz, char *cadena) {
+    if (traverse_dir(dir_raiz, ifind_aux, cadena, 2) == -1) {
+        fprintf(stderr, "Error al ejecutar ifind con el archivo %s\n", dir_raiz);
     }
 }
 
@@ -89,15 +89,15 @@ int ifind_aux(char *path, void *args) {
  * la cadena1 dada y que su contenido contenga la cadena2 .
  * 
  * Parámetros:
- *      directorioRaiz: ruta del directorio raíz 
+ *      dir_raiz: ruta del directorio raíz 
  */
-void cfind(char *directorioRaiz, char *cadena1, char *cadena2) {
+void cfind(char *dir_raiz, char *cadena1, char *cadena2) {
     char **args = malloc(sizeof(char *) * 2);
     args[0] = cadena1;
     args[1] = cadena2;
 
-    if (traverseDir(directorioRaiz, cfind_aux, args, 2) == -1) {
-        fprintf(stderr, "Error al ejecutar cfind con el archivo %s\n", directorioRaiz);
+    if (traverse_dir(dir_raiz, cfind_aux, args, 2) == -1) {
+        fprintf(stderr, "Error al ejecutar cfind con el archivo %s\n", dir_raiz);
     }
 
     free(args);

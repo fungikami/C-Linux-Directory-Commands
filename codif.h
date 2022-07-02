@@ -8,5 +8,5 @@
 #ifndef __CODIF_H__
     #define __CODIF_H__
 
-    void codif(char *directorioRaiz);
+    void codif(char *dir_raiz);
 #endif

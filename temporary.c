@@ -115,7 +115,7 @@ int count_lines_chars(char *path, int *lines, int *chars) {
  * Retorno:
  *
  */
-int traverseDir(char *path, char *name_to_find) {
+int traverse_dir(char *path, char *name_to_find) {
     DIR* dir;
     struct dirent* ent;
 
@@ -144,7 +144,7 @@ int traverseDir(char *path, char *name_to_find) {
 
             /* Si es un directorio, sigue recorriendo */
             if (is_dir) {
-                int status = traverseDir(new_path, name_to_find);
+                int status = traverse_dir(new_path, name_to_find);
                 if (status == -1) {
                     return -1;
                 }
@@ -363,7 +363,7 @@ int roll_aux2(char *path, struct Args *args) {
 }
 
 int main(int argc, char **argv) {
-    char *dirRaiz;
+    char *dir_raiz;
     struct stat st;
 
     /* Verifica que se reciba el directorio raiz */
@@ -373,9 +373,9 @@ int main(int argc, char **argv) {
     }
 
     /* Verifica que el directorio raiz pueda ser abierto */
-    dirRaiz = argv[1];
-    if (stat(dirRaiz, &st) == -1) {
-        printf("Error: El directorio raiz %s no puede ser abierto\n", dirRaiz);
+    dir_raiz = argv[1];
+    if (stat(dir_raiz, &st) == -1) {
+        printf("Error: El directorio raiz %s no puede ser abierto\n", dir_raiz);
         return 1;
     }
 
@@ -401,10 +401,10 @@ int main(int argc, char **argv) {
         /* Ejecuta la función correspondiente según el comando invocado */
         if (!strcmp(comando, "find")) {
             remove_quotes(cadena);
-            find(dirRaiz, cadena);
+            find(dir_raiz, cadena);
         } else if (!strcmp(comando, "ifind")) {
             remove_quotes(cadena);
-            ifind(dirRaiz, cadena);
+            ifind(dir_raiz, cadena);
         } else if (!strcmp(comando, "cfind")) {
             char *cadena2;
             if (!cadena || !(cadena2 = strchr(cadena, separator))) {
@@ -414,28 +414,28 @@ int main(int argc, char **argv) {
             }
             *cadena2 = '\0';
             cadena2++;
-            cfind(dirRaiz, cadena, cadena2);
+            cfind(dir_raiz, cadena, cadena2);
         } else if (!strcmp(comando, "repla")) {
             if (!cadena) {
                 fprintf(stderr, "Error: El comando debe ser de la forma: repla <file>\n");
                 free(comando);
                 continue;
             }
-            repla(dirRaiz, cadena);
+            repla(dir_raiz, cadena);
         } else if (!strcmp(comando, "wc")) {
             if (cadena) {
                 fprintf(stderr, "Error: El comando debe ser de la forma: wc\n");
                 free(comando);
                 continue;
             }
-            wc(dirRaiz);
+            wc(dir_raiz);
         } else if (!strcmp(comando, "codif")) {
             if (cadena) {
                 fprintf(stderr, "Error: El comando debe ser de la forma: codif\n");
                 free(comando);
                 continue;
             }
-            codif(dirRaiz);
+            codif(dir_raiz);
         } else if (!strcmp(comando, "roll")) {
             int n = 0;
             char *number = cadena;
@@ -447,7 +447,7 @@ int main(int argc, char **argv) {
                 }
                 n = atoi(number);
             }
-            roll(dirRaiz, n);
+            roll(dir_raiz, n);
         } else if (!strcmp(comando, "exit")) {
             free(comando);
             break;
@@ -463,7 +463,7 @@ int main(int argc, char **argv) {
 
 
 int main(int argc, char **argv) {
-    char *dirRaiz;
+    char *dir_raiz;
     struct stat st;
 
     /* Verifica que se reciba el directorio raiz */
@@ -473,9 +473,9 @@ int main(int argc, char **argv) {
     }
 
     /* Verifica que el directorio raiz pueda ser abierto */
-    dirRaiz = argv[1];
-    if (stat(dirRaiz, &st) == -1) {
-        printf("Error: El directorio raiz %s no puede ser abierto\n", dirRaiz);
+    dir_raiz = argv[1];
+    if (stat(dir_raiz, &st) == -1) {
+        printf("Error: El directorio raiz %s no puede ser abierto\n", dir_raiz);
         return 1;
     }
 
@@ -496,10 +496,10 @@ int main(int argc, char **argv) {
         /* Ejecuta la función correspondiente según el comando invocado */
         if (!strcmp(token, "find")) {
             char *cadena = strtok(NULL, " ");
-            find(dirRaiz, cadena);
+            find(dir_raiz, cadena);
         } else if (!strcmp(token, "ifind")) {
             char *cadena = strtok(NULL, " ");
-            ifind(dirRaiz, cadena);
+            ifind(dir_raiz, cadena);
         } else if (!strcmp(token, "cfind")) {
             char *cadena1 = strtok(NULL, " ");
             char *cadena2 = strtok(NULL, " ");
@@ -511,7 +511,7 @@ int main(int argc, char **argv) {
                 continue;
             }
 
-            cfind(dirRaiz, cadena1, cadena2);
+            cfind(dir_raiz, cadena1, cadena2);
         } else if (!strcmp(token, "repla")) {
             char *file = strtok(NULL, " ");
             char *wrong_file = strtok(NULL, " ");
@@ -522,7 +522,7 @@ int main(int argc, char **argv) {
                 continue;
             }
 
-            repla(dirRaiz, file);
+            repla(dir_raiz, file);
         } else if (!strcmp(token, "wc")) {
             if (strtok(NULL, " ")) {
                 fprintf(stderr, "Error: El comando debe ser de la forma: wc\n");
@@ -530,7 +530,7 @@ int main(int argc, char **argv) {
                 continue;
             }
 
-            wc(dirRaiz);
+            wc(dir_raiz);
         } else if (!strcmp(token, "codif")) {
             if (strtok(NULL, " ")) {
                 fprintf(stderr, "Error: El comando debe ser de la forma: codif\n");
@@ -538,7 +538,7 @@ int main(int argc, char **argv) {
                 continue;
             }
 
-            codif(dirRaiz);
+            codif(dir_raiz);
         } else if (!strcmp(token, "roll")) {
             int n = 0;
             char *number = strtok(NULL, " ");
@@ -551,7 +551,7 @@ int main(int argc, char **argv) {
                 n = atoi(number);
             }
 
-            roll(dirRaiz, n);
+            roll(dir_raiz, n);
         } else if (!strcmp(token, "exit")) {
             free(str);
             break;

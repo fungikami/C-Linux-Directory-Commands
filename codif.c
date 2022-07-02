@@ -21,10 +21,10 @@ int codif_aux(char *path, void *args);
  * para invertir el contenido de los archivos de un directorio raíz.
  * 
  * Parámetros:
- *      directorioRaiz: ruta del directorio raíz 
+ *      dir_raiz: ruta del directorio raíz 
  */
-void codif(char *directorioRaiz) {
-    if (traverseDir(directorioRaiz, codif_aux, NULL, 0) == -1) {
+void codif(char *dir_raiz) {
+    if (traverse_dir(dir_raiz, codif_aux, NULL, 0) == -1) {
         fprintf(stderr, "Error al ejecutar codif.\n");
     }
 }
@@ -57,7 +57,7 @@ int codif_aux(char *path, void *args) {
     }
 
     /* Determinar mitad del archivo */
-    n = lseek(fd, 0, SEEK_END) / 2
+    n = lseek(fd, 0, SEEK_END) / 2;
     if (lseek(fd, 0, SEEK_SET) == -1 || n == -1) {
         free(lbuffer);
         free(rbuffer);
