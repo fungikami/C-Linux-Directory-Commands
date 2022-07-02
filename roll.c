@@ -13,7 +13,7 @@
 #include <unistd.h>
 #include "utilidades.h"
 
-int roll_aux(char *path, struct Args *args);
+int roll_aux(char *path, void *args);
 
 /**
  * Función que llama la función auxiliar roll para rotar n  
@@ -24,15 +24,9 @@ int roll_aux(char *path, struct Args *args);
  *      n: número de caracteres a rotar
  */
 void roll(char *directorioRaiz, int n) {
-    struct Args* args = (struct Args*)malloc(sizeof(struct Args));
-    if (!args) {
-        fprintf(stderr, "Error al reservar memoria\n");
-    }
-    args->n = n;
-    if (traverseDir(directorioRaiz, roll_aux, args, 0) == -1) {
+    if (traverseDir(directorioRaiz, roll_aux, &n, 0) == -1) {
         fprintf(stderr, "Error al ejecutar roll.\n");
     }
-    free(args);
 }
 
 /**
@@ -47,42 +41,43 @@ void roll(char *directorioRaiz, int n) {
  * Retorno:
  *      0 si todo fue correcto, -1 si hubo un error.
  */
- int roll_aux(char *path, struct Args *args) { 
+ int roll_aux(char *path, void *args) { 
     char *buffer_n, *buffer;
-    int filesize, unread;  
-    int n = args->n;
+    int unread;  
+    int n = *(int *) args;
 
     /* Verifica que el archivo fue abierto */
     int fd = open(path, O_RDWR);
     if (fd == -1) return -1;
 
-    filesize = lseek(fd, -1, SEEK_END);
+    /* Reserva memoria para los bloques a rotar */
     buffer_n = (char*)malloc(sizeof(char) * abs(n));
-    buffer = (char*)malloc(sizeof(char) * BUFSIZE);
-    if (!buffer_n || !buffer || filesize == -1) return -1;
+    buffer = (char*)malloc(sizeof(char) * BUFSIZ);
+    unread = lseek(fd, 0, SEEK_END);
+    if (!buffer_n || !buffer || unread == -1) return -1;
 
-    unread = filesize;
     /* Si n es positivo, se rota hacia la derecha */
     if (n > 0) {
         /* Lee los últimos n caracteres */
-        if (lseek(fd, -n-1, SEEK_END) == -1) return -1;
+        if (lseek(fd, -n, SEEK_END) == -1) return -1;
         if (read(fd, buffer_n, n) == -1) return -1;
         unread -= n;
         
-        /* Rota bloques de BUFSIZE caracteres */
-        while (unread >= BUFSIZE) {
-            lseek(fd, unread - BUFSIZE, SEEK_SET);
-            read(fd, buffer, BUFSIZE);
-            lseek(fd, n - BUFSIZE, SEEK_CUR);
-            write(fd, buffer, BUFSIZE);
-            unread -= BUFSIZE;
-        }
+        /* Rota bloques de BUFSIZ caracteres */
+        while (unread) {
+            /* Determinar el tamaño del bloque a leer */
+            int toread = unread;
+            if (unread > BUFSIZ) toread = BUFSIZ;
 
-        /* Rota los caracteres restantes */
-        lseek(fd, 0, SEEK_SET);
-        read(fd, buffer, unread);
-        lseek(fd, n, SEEK_SET);
-        write(fd, buffer, unread);
+            /* Lee el bloque más derecho a rotar */
+            lseek(fd, unread - toread, SEEK_SET);
+            read(fd, buffer, toread);
+
+            /* Escribe el bloque más derecho a rotar */
+            lseek(fd, n - toread, SEEK_CUR);
+            write(fd, buffer, toread);
+            unread -= toread;
+        }
 
         /* Escribe los n caracteres */
         lseek(fd, 0, SEEK_SET);
@@ -97,23 +92,21 @@ void roll(char *directorioRaiz, int n) {
         read(fd, buffer_n, n);
         unread -= n;
         
-        /* Rota bloques de BUFSIZE caracteres */
-        while (unread >= BUFSIZE) {
-            lseek(fd, -unread-1, SEEK_END);
-            read(fd, buffer, BUFSIZE);
-            lseek(fd, -BUFSIZE-n, SEEK_CUR);
-            write(fd, buffer, BUFSIZE);
-            unread -= BUFSIZE;
+        /* Rota bloques de BUFSIZ caracteres */
+        while (unread) {
+            int toread = unread;
+            if (unread > BUFSIZ) toread = BUFSIZ;
+
+            lseek(fd, -unread, SEEK_END);
+            read(fd, buffer, toread);
+
+            lseek(fd, -toread-n, SEEK_CUR);
+            write(fd, buffer, toread);
+            unread -= toread;
         }
         
-        /* Rota los caracteres restantes */
-        lseek(fd, -unread-1, SEEK_END);
-        read(fd, buffer, unread);
-        lseek(fd, -unread-n, SEEK_CUR);
-        write(fd, buffer, unread);
-        
         /* Escribe los n caracteres */
-        lseek(fd, -n-1, SEEK_END);
+        lseek(fd, -n, SEEK_END);
         write(fd, buffer_n, n);
     }
         

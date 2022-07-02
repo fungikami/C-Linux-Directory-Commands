@@ -17,6 +17,18 @@
 #include <sys/stat.h>
 #include "utilidades.h"
 
+
+
+void remove_quotes(char *str) {
+    if (str[0] == '\"' && str[strlen(str) - 1] == '\"') {
+        int i;
+        for (i = 0; i < strlen(str); i++) {
+            str[i] = str[i + 1];
+        }
+        str[strlen(str) - 1] = '\0';
+    }
+}
+
 /** 
  * Extrae la línea de comando de manera dinámica.
  * Retorno:
@@ -117,7 +129,7 @@ int is_reg_file(char *path) {
  * Retorno:
  *      0 si todo fue correcto, -1 si hubo un error durante la ejecución.
  */
-int traverseDir(char* path, int (*fun) (char *path, struct Args* argum), struct Args* argum, int action_to_dir) {
+int traverseDir(char* path, int (*fun) (char *, void *), void *argum, int action_to_dir) {
     DIR* dir;
     struct dirent* ent;
 

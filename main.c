@@ -40,7 +40,6 @@
 
 int main(int argc, char **argv) {
     char *dirRaiz;
-    char *str;
     struct stat st;
 
     /* Verifica que se reciba el directorio raiz */
@@ -58,7 +57,7 @@ int main(int argc, char **argv) {
 
     /* Pide los comandos a ejecutar */
     while (1) {
-        char * token;
+        char *token, *str;
         printf("myutil> ");
         str = get_line();
         if (!str) fprintf(stderr, "Error al leer la línea de comando\n");

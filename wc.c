@@ -116,7 +116,7 @@ int wc_aux(char *path, int *cum_lines, int *cum_chars) {
  *      0 si todo fue correcto, -1 si hubo un error
  */
 int count_lines_chars(char *path, int *lines, int *chars) {
-    char c, buf[BUFSIZE];
+    char c, buf[BUFSIZ];
     int len, i;
     int fd = open(path, O_RDONLY);
 
@@ -127,7 +127,7 @@ int count_lines_chars(char *path, int *lines, int *chars) {
     }
 
     /* Cuenta cuantos saltos de líneas y caracteres hay por cada bloque */
-    while ((len = read(fd, buf, BUFSIZE)) > 0) {
+    while ((len = read(fd, buf, BUFSIZ)) > 0) {
         for (i = 0; i < len; i++) {
             c = buf[i];
             if (c == '\n') {

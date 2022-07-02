@@ -17,7 +17,7 @@
 #include "lista.h"
 #include "utilidades.h"
 
-int repla_aux(char *archivo, struct Args *args);
+int repla_aux(char *archivo, void *args);
 char *random_string(int length);
 struct Nodo *extraer_palabras(char *archivo);
 
@@ -30,20 +30,17 @@ struct Nodo *extraer_palabras(char *archivo);
  *      file: lista de pares de cadenas de caracteres
  */
 void repla(char *directorioRaiz, char *file) {
-    struct Args* args = (struct Args*)malloc(sizeof(struct Args));
-    if (!args) {
-        fprintf(stderr, "Error al reservar memoria\n");
-    }
-    
-    args->lista = extraer_palabras(file);
-    if (args->lista == NULL) {
+    struct Nodo *lista = extraer_palabras(file);
+    if (!lista) {
         fprintf(stderr, "Error al extraer las palabras del archivo %s\n", file);
+        return;
     }
 
-    if (traverseDir(directorioRaiz, repla_aux, args, 0) == -1) {
+    if (traverseDir(directorioRaiz, repla_aux, lista, 0) == -1) {
         fprintf(stderr, "Error al ejecutar repla.\n");
     }
-    free(args);
+    
+    liberar_lista(lista);
 }
 
 /** 
@@ -55,8 +52,8 @@ void repla(char *directorioRaiz, char *file) {
  * Retorno:
  *      - 0 si se pudo reemplazar, -1 si no se pudo reemplazar
  */
-int repla_aux(char* archivo, struct Args *args) {
-    struct Nodo* cabeza = args->lista;
+int repla_aux(char* archivo, void *args) {
+    struct Nodo* cabeza = (struct Nodo*) args;
     char ch;
     char* temp_archivo = random_string(10);   
     FILE *ptr, *write_ptr;

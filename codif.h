@@ -9,5 +9,4 @@
     #define __CODIF_H__
 
     void codif(char *directorioRaiz);
-    void codif2(char *directorioRaiz);
 #endif

@@ -82,7 +82,7 @@ int wc(char *path, int *lines, int *chars) {
 }
 
 int count_lines_chars(char *path, int *lines, int *chars) {
-    char c, buf[BUFSIZE];
+    char c, buf[BUFSIZ];
     int len, i;
     int fd = open(path, O_RDONLY);
 
@@ -93,7 +93,7 @@ int count_lines_chars(char *path, int *lines, int *chars) {
     }
 
     /* Por cada caracter, cuenta cuantos saltos de líneas y caracteres hay */
-    while ((len = read(fd, buf, BUFSIZE)) > 0) {
+    while ((len = read(fd, buf, BUFSIZ)) > 0) {
         for (i = 0; i < len; i++) {
             c = buf[i];
             if (c == '\n') {
@@ -205,6 +205,47 @@ int codif(struct Args *args) {
     return 0;
 }
 
+
+int codif_aux2(char *path, void *args) {
+    char izq, der;
+    int fd = open(path, O_RDWR);
+    long m, n, filesize;
+
+    /* Verifica que el archivo fue abierto */
+    if (fd == -1) return -1;
+
+    filesize = lseek(fd, -1, SEEK_END);
+    lseek(fd, 0, SEEK_SET);
+
+    m = 0;
+    n = filesize / 2;
+    while (n) {
+        /* Lee el caracter más izquierdo a intercambiar */
+        if (lseek(fd, m++, SEEK_SET) == -1) return -1;
+        if (read(fd, &izq, 1) == -1) return -1;
+
+        /* Lee el caracter más derecho a intercambiar */
+        if (lseek(fd, -m-1, SEEK_END) == -1) return -1;
+        if (read(fd, &der, 1) == -1) return -1;
+
+        /* Escribe el caracter más derecho en la izquierda*/
+        if (lseek(fd, -m-1, SEEK_END) == -1) return -1;
+        if (write(fd, &izq, 1) == -1) return -1;
+
+        /* Escribe el caracter más izquierdo en la derecha*/
+        if (lseek(fd, m-1, SEEK_SET) == -1) return -1;
+        if (write(fd, &der, 1) == -1) return -1;
+
+        n--;
+    }
+
+    /* Cierra el archivo */
+    close(fd);
+    return 0;
+}
+
+
+
 int cfind(char *path, struct Args *args) {
     FILE *stream;
     char *line = NULL;
@@ -242,7 +283,7 @@ int cfind(char *path, struct Args *args) {
 int cfind(char *path, struct Args *args) {
     char *string = args->cadena1;
     char *string2 = args->cadena2;
-    char buffer[BUFSIZE];
+    char buffer[BUFSIZ];
     int fd, len;
 
     /* Verifica si path contiene el string */
@@ -256,7 +297,7 @@ int cfind(char *path, struct Args *args) {
     }
 
     /* Verifica que el contenido del archivo tenga la cadena string2 */
-    while ((len = read(fd, buffer, BUFSIZE)) > 0) {
+    while ((len = read(fd, buffer, BUFSIZ)) > 0) {
         if (strstr(buffer, string2)) {
             printf("%s\n", path);
             return 1;
@@ -321,3 +362,43 @@ int roll_aux2(char *path, struct Args *args) {
     return 0;
 }
 
+int main () {
+    /* Pide los comandos a ejecutar */
+    while (1) {
+        char separator = ' ';
+        char *cadena, *comando;
+        printf("myutil> ");
+        comando = get_line();
+
+
+        /* Separa los argumentos de la línea de comando */
+        cadena = strchr(comando, separator);    
+        if (strcmp(comando, "") == 0) {
+            free(comando);
+            continue;
+        }
+        *cadena = '\0';
+        cadena++;
+
+        /* Ejecuta la función correspondiente según el comando invocado */
+        if (!strcmp(comando, "find")) {
+            /* Remueve las comillas en caso de tener */
+            remove_quotes(cadena);
+            find(dirRaiz, cadena);
+        } else if (!strcmp(comando, "ifind")) {
+            remove_quotes(cadena);
+            ifind(dirRaiz, cadena);
+        } else if (!strcmp(comando, "cfind")) {
+            
+        } else {
+            fprintf(stderr, "Error: Comando no reconocido\n");
+        }
+
+        free(comando);
+
+
+        remove_quotes(cadena);
+        printf("%c %c\n", cadena[0], cadena[strlen(cadena) - 1]);
+        printf("%s, %sa\n", comando, cadena);
+    }
+}
