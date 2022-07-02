@@ -17,10 +17,13 @@
 #include <sys/stat.h>
 #include "utilidades.h"
 
-
-
+/**
+ * Función que remueve los comillas de una cadena.
+ * Parámetros:
+ *  - str: cadena de caracteres a la cual se le removeran las comillas.
+ */
 void remove_quotes(char *str) {
-    if (str[0] == '\"' && str[strlen(str) - 1] == '\"') {
+    if (str && str[0] == '\"' && str[strlen(str) - 1] == '\"') {
         int i;
         for (i = 0; i < strlen(str); i++) {
             str[i] = str[i + 1];

@@ -57,85 +57,81 @@ int main(int argc, char **argv) {
 
     /* Pide los comandos a ejecutar */
     while (1) {
-        char *token, *str;
+        char separator = ' ';
+        char *cadena, *comando;
         printf("myutil> ");
-        str = get_line();
-        if (!str) fprintf(stderr, "Error al leer la línea de comando\n");
+        comando = get_line();
+
 
         /* Separa los argumentos de la línea de comando */
-        token = strtok(str, " ");
-        if (!token) {
-            free(str);
+        cadena = strchr(comando, separator);    
+        if (strcmp(comando, "") == 0) {
+            free(comando);
             continue;
         }
-        
+        if (cadena) {
+            *cadena = '\0';
+            cadena++;
+        }
+
         /* Ejecuta la función correspondiente según el comando invocado */
-        if (!strcmp(token, "find")) {
-            char *cadena = strtok(NULL, " ");
+        if (!strcmp(comando, "find")) {
+            remove_quotes(cadena);
             find(dirRaiz, cadena);
-        } else if (!strcmp(token, "ifind")) {
-            char *cadena = strtok(NULL, " ");
+        } else if (!strcmp(comando, "ifind")) {
+            remove_quotes(cadena);
             ifind(dirRaiz, cadena);
-        } else if (!strcmp(token, "cfind")) {
-            char *cadena1 = strtok(NULL, " ");
-            char *cadena2 = strtok(NULL, " ");
-            char *cadena3 = strtok(NULL, " ");
-
-            if (!cadena1 || !cadena2 || cadena3) {
+        } else if (!strcmp(comando, "cfind")) {
+            char *cadena2;
+            if (!cadena || !(cadena2 = strchr(cadena, separator))) {
                 fprintf(stderr, "Error: El comando debe ser de la forma: cfind <cadena1> <cadena2>\n");
-                free(str);
+                free(comando);
                 continue;
             }
-
-            cfind(dirRaiz, cadena1, cadena2);
-        } else if (!strcmp(token, "repla")) {
-            char *file = strtok(NULL, " ");
-            char *wrong_file = strtok(NULL, " ");
-
-            if (!file || wrong_file) {
+            *cadena2 = '\0';
+            cadena2++;
+            cfind(dirRaiz, cadena, cadena2);
+        } else if (!strcmp(comando, "repla")) {
+            if (!cadena) {
                 fprintf(stderr, "Error: El comando debe ser de la forma: repla <file>\n");
-                free(str);
+                free(comando);
                 continue;
             }
-
-            repla(dirRaiz, file);
-        } else if (!strcmp(token, "wc")) {
-            if (strtok(NULL, " ")) {
+            repla(dirRaiz, cadena);
+        } else if (!strcmp(comando, "wc")) {
+            if (cadena) {
                 fprintf(stderr, "Error: El comando debe ser de la forma: wc\n");
-                free(str);
+                free(comando);
                 continue;
             }
-
             wc(dirRaiz);
-        } else if (!strcmp(token, "codif")) {
-            if (strtok(NULL, " ")) {
+        } else if (!strcmp(comando, "codif")) {
+            if (cadena) {
                 fprintf(stderr, "Error: El comando debe ser de la forma: codif\n");
-                free(str);
+                free(comando);
                 continue;
             }
-
             codif(dirRaiz);
-        } else if (!strcmp(token, "roll")) {
+        } else if (!strcmp(comando, "roll")) {
             int n = 0;
-            char *number = strtok(NULL, " ");
+            char *number = cadena;
             if (number) {
                 if (!is_integer(number)) {
                     fprintf(stderr, "Error: El comando debe ser de la forma: roll [<n>] con n entero.\n");
-                    free(str);
+                    free(comando);
                     continue;
                 }
                 n = atoi(number);
             }
-
             roll(dirRaiz, n);
-        } else if (!strcmp(token, "exit")) {
-            free(str);
+        } else if (!strcmp(comando, "exit")) {
+            free(comando);
             break;
         } else {
             fprintf(stderr, "Error: Comando no reconocido\n");
         }
 
-        free(str);
+        free(comando);
     }
     
     return 0;
