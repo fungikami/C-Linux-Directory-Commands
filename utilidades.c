@@ -32,6 +32,57 @@ void remove_quotes(char *str) {
     }
 }
 
+/**
+ * Función que separa una cadena de caracteres en dos cadenas. 
+ * En caso de tener comillas, las remueve.
+ * Parámetros:
+ *  - str: cadena de caracteres a la cual se le separara.
+ *  - cadena1: primera cadena de caracteres que se guardara.
+ *  - cadena2: segunda cadena de caracteres que se guardara.
+ * Retorno:
+ *  - 0: si la separación se realizo correctamente, -1 en caso contrario.
+ */
+int separate_str(char *str, char **cadena1, char **cadena2) {
+    int i;
+
+    if (!str) return -1;
+
+    /* Reserva memoria para las dos cadenas */
+    *cadena1 = (char *) malloc(sizeof(char) * (strlen(str) + 1));
+    *cadena2 = (char *) malloc(sizeof(char) * (strlen(str) + 1));
+    if (!*cadena1 || !*cadena2) {
+        free(*cadena1);
+        free(*cadena2);
+        return -1;
+    }
+
+    if (str[0] == '\"') {
+        /* Si hay una comilla al principio, guarda en cadena1 hasta la otra comilla */
+        for (i = 1; str[i] != '\"' && str[i] != '\0'; i++) {
+            (*cadena1)[i - 1] = str[i];
+        }
+        (*cadena1)[i - 1] = '\0';
+        i++;
+    } else {
+        /* Si no hay comilla al principio, guarda en cadena1 hasta el espacio */
+        for (i = 0; str[i] != ' ' && str[i] != '\0'; i++) {
+            (*cadena1)[i] = str[i];
+        }
+        (*cadena1)[i] = '\0';
+    } 
+
+    /* Verifica que exista una cadena2 y lo copia sin comillas */
+    if (str[i] == '\0') {
+        free(*cadena1);
+        free(*cadena2);
+        return -1;
+    }
+    strcpy(*cadena2, str + i + 1);
+    remove_quotes(*cadena2);
+
+    return 0;
+}
+
 /** 
  * Extrae la línea de comando de manera dinámica.
  * Retorno:

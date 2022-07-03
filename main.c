@@ -75,54 +75,72 @@ int main(int argc, char **argv) {
 
         /* Ejecuta la función correspondiente según el comando invocado */
         if (!strcmp(comando, "find")) {
+
+            /* Remueve las comillas de la cadena en caso de tenerlo */
             remove_quotes(cadena);
             find(dir_raiz, cadena);
+
         } else if (!strcmp(comando, "ifind")) {
+
+            /* Remueve las comillas de la cadena en caso de tenerlo */
             remove_quotes(cadena);
             ifind(dir_raiz, cadena);
+
         } else if (!strcmp(comando, "cfind")) {
-            char *cadena2;
-            if (!cadena || !(cadena2 = strchr(cadena, separator))) {
-                fprintf(stderr, "Error: El comando debe ser de la forma: cfind <cadena1> <cadena2>\n");
+
+            /* Separa las dos cadenas y remueve las comillas en caso de tenerlo */
+            char *cadena1, *cadena2;
+            if (separate_str(cadena, &cadena1, &cadena2) == -1) {
+                printf("Uso: cfind <cadena1> <cadena2>\n");
                 free(comando);
                 continue;
             }
-            *cadena2 = '\0';
-            cadena2++;
-            cfind(dir_raiz, cadena, cadena2);
+            cfind(dir_raiz, cadena1, cadena2);
+            free(cadena1);
+            free(cadena2);
+
         } else if (!strcmp(comando, "repla")) {
+
             if (!cadena) {
-                fprintf(stderr, "Error: El comando debe ser de la forma: repla <file>\n");
+                fprintf(stderr, "Uso: repla <file>\n");
                 free(comando);
                 continue;
             }
             repla(dir_raiz, cadena);
+
         } else if (!strcmp(comando, "wc")) {
+
             if (cadena) {
-                fprintf(stderr, "Error: El comando debe ser de la forma: wc\n");
+                fprintf(stderr, "Uso: wc\n");
                 free(comando);
                 continue;
             }
             wc(dir_raiz);
+
         } else if (!strcmp(comando, "codif")) {
+
             if (cadena) {
-                fprintf(stderr, "Error: El comando debe ser de la forma: codif\n");
+                fprintf(stderr, "Uso: codif\n");
                 free(comando);
                 continue;
             }
             codif(dir_raiz);
+
         } else if (!strcmp(comando, "roll")) {
+            
+            /* Verifica que n sea un entero */
             int n = 0;
             char *number = cadena;
             if (number) {
                 if (!is_integer(number)) {
-                    fprintf(stderr, "Error: El comando debe ser de la forma: roll [<n>] con n entero.\n");
+                    fprintf(stderr, "Uso: roll [<n>] con n entero.\n");
                     free(comando);
                     continue;
                 }
                 n = atoi(number);
             }
             roll(dir_raiz, n);
+
         } else if (!strcmp(comando, "exit")) {
             free(comando);
             break;
