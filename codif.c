@@ -101,7 +101,9 @@ int codif_aux(char *path, void *args) {
         unread -= toread;
     }
 
-    /* Cierra el archivo */
+    /* Cierra el archivoy y libera memoria */
+    free(lbuffer);
+    free(rbuffer);
     close(fd);
     return 0;
 }

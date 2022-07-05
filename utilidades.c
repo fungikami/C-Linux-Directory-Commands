@@ -89,7 +89,7 @@ int separate_str(char *str, char **cadena1, char **cadena2) {
  *      char* con la línea de comando
  */
 char *get_line() {
-    int n = 100, i = 0;
+    int n = 64, i = 0;
     char c = fgetc(stdin);
     char *line = malloc(sizeof(char) * n);
     if (!line) return NULL;
@@ -102,12 +102,12 @@ char *get_line() {
 
         /* Si aún queda por scannear pero no hay espacio, realloc */
         if (i == n) {
-            line = realloc(line, sizeof(char) * (n + 100));
+            line = realloc(line, sizeof(char) * (n + 64));
             if (!line) {
                 free(line);
                 return NULL;
             }
-            n += 100;
+            n += 64;
         }
     } 
 
@@ -130,7 +130,7 @@ char *get_line() {
  */
 int is_integer(char *str) {
     int i = 0;
-    if (str[i] == '-') i++;
+    if (str[i] == '-' || str[i] == '+') i++;
     for (; str[i]; i++) {
         if (!isdigit(str[i])) return 0;
     }

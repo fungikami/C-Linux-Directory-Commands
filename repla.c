@@ -78,10 +78,11 @@ int repla_aux(char* archivo, void *args) {
     while (ch != EOF) {   
         /* Revisamos por cada palabra de la lista */
         struct Nodo* actual = cabeza;
+        long int pos = ftell(ptr) - 1;
         while (actual != NULL) {
+
             /* Itera mientras coincidan la palabra de la lista y el texto*/
             int i = 0;
-            
             while (ch == actual->dato->x[i]) {
                 ch = fgetc(ptr);
                 i++;
@@ -95,7 +96,7 @@ int repla_aux(char* archivo, void *args) {
 
             /* En cambio, se revisa con la siguiente palabra de la lista*/
             actual = actual->next;
-            fseek(ptr, -i-1, SEEK_CUR);
+            fseek(ptr, pos, SEEK_SET);
             ch = fgetc(ptr);
         }
 

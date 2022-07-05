@@ -61,7 +61,6 @@ int main(int argc, char **argv) {
         printf("myutil> ");
         comando = get_line();
 
-
         /* Separa los argumentos de la línea de comando */
         cadena = strchr(comando, separator);    
         if (strcmp(comando, "") == 0) {
