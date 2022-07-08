@@ -28,9 +28,8 @@ int count_lines_chars(char *path, int *lines, int *chars);
  */
 void wc(char *dir_raiz) {
     int lineas, chars;
-    if (wc_aux(dir_raiz, &lineas, &chars) == -1) {
+    if (wc_aux(dir_raiz, &lineas, &chars) == -1)
         fprintf(stderr, "Error al ejecutar wc.\n");
-    }
 }
 
 /**

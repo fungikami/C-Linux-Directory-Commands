@@ -29,9 +29,8 @@ int cfind_aux(char *path, void *args);
  *      dir_raiz: ruta del directorio raíz.
  */
 void find(char *dir_raiz, char *cadena) {
-    if (traverse_dir(dir_raiz, find_aux, cadena, 2) == -1) {
+    if (traverse_dir(dir_raiz, find_aux, cadena, 2) == -1)
         fprintf(stderr, "Error al ejecutar ifind con el archivo %s\n", dir_raiz);
-    }
 }
 
 /**
@@ -60,9 +59,8 @@ int find_aux(char *path, void *args) {
  *      dir_raiz: ruta del directorio raíz 
  */
 void ifind(char *dir_raiz, char *cadena) {
-    if (traverse_dir(dir_raiz, ifind_aux, cadena, 2) == -1) {
+    if (traverse_dir(dir_raiz, ifind_aux, cadena, 2) == -1)
         fprintf(stderr, "Error al ejecutar ifind con el archivo %s\n", dir_raiz);
-    }
 }
 
 /**
@@ -96,9 +94,8 @@ void cfind(char *dir_raiz, char *cadena1, char *cadena2) {
     args[0] = cadena1;
     args[1] = cadena2;
 
-    if (traverse_dir(dir_raiz, cfind_aux, args, 2) == -1) {
+    if (traverse_dir(dir_raiz, cfind_aux, args, 2) == -1)
         fprintf(stderr, "Error al ejecutar cfind con el archivo %s\n", dir_raiz);
-    }
 
     free(args);
 }

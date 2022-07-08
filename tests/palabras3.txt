@@ -1,0 +1,7 @@
+hola:Hola
+completo:nada
+Rosa:Mer
+arepera:tyler
+Luis:Marcos
+Luisa:Ana
+resumen:Analisis

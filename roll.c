@@ -24,9 +24,8 @@ int roll_aux(char *path, void *args);
  *      n: número de caracteres a rotar
  */
 void roll(char *dir_raiz, int n) {
-    if (traverse_dir(dir_raiz, roll_aux, &n, 0) == -1) {
+    if (traverse_dir(dir_raiz, roll_aux, &n, 0) == -1)
         fprintf(stderr, "Error al ejecutar roll.\n");
-    }
 }
 
 /**
@@ -63,8 +62,12 @@ void roll(char *dir_raiz, int n) {
     /* Si n es positivo, se rota hacia la derecha */
     if (n > 0) {
         /* Lee los últimos n caracteres */
-        if (lseek(fd, -n, SEEK_END) == -1) return -1;
-        if (read(fd, nbuffer, n) == -1) return -1;
+        if (lseek(fd, -n, SEEK_END) == -1 || read(fd, nbuffer, n) == -1) {
+            free(nbuffer);
+            free(buffer);
+            close(fd);
+            return -1;
+        }
         unread -= n;
         
         /* Rota bloques de BUFSIZ caracteres */
@@ -74,26 +77,37 @@ void roll(char *dir_raiz, int n) {
             if (unread > BUFSIZ) toread = BUFSIZ;
 
             /* Lee el bloque más derecho a rotar */
-            lseek(fd, unread - toread, SEEK_SET);
-            read(fd, buffer, toread);
+            if (lseek(fd, unread - toread, SEEK_SET) == -1 || read(fd, buffer, toread) == -1) {
+                return -1;
+            }
 
             /* Escribe el bloque más derecho a rotar */
-            lseek(fd, n - toread, SEEK_CUR);
-            write(fd, buffer, toread);
+            if (lseek(fd, n - toread, SEEK_CUR) == -1 || write(fd, buffer, toread) == -1) {
+                return -1;
+            }
+
             unread -= toread;
         }
 
         /* Escribe los n caracteres */
-        lseek(fd, 0, SEEK_SET);
-        write(fd, nbuffer, n);
+        if (lseek(fd, 0, SEEK_SET) == -1 || write(fd, nbuffer, n) == -1) {
+            free(nbuffer);
+            free(buffer);
+            close(fd);
+            return -1;
+        }
 
     } else if (n < 0) {
         /* Si n es negativo, se rota hacia la izquierda */
         n = abs(n);
 
         /* Lee los primeros n caracteres */
-        lseek(fd, 0, SEEK_SET);
-        read(fd, nbuffer, n);
+        if (lseek(fd, 0, SEEK_SET) == -1 || read(fd, nbuffer, n) == -1) {
+            free(nbuffer);
+            free(buffer);
+            close(fd);
+            return -1;
+        }
         unread -= n;
         
         /* Rota bloques de BUFSIZ caracteres */
@@ -101,17 +115,24 @@ void roll(char *dir_raiz, int n) {
             int toread = unread;
             if (unread > BUFSIZ) toread = BUFSIZ;
 
-            lseek(fd, -unread, SEEK_END);
-            read(fd, buffer, toread);
+            if (lseek(fd, -unread, SEEK_END) == -1 || read(fd, buffer, toread) == -1) {
+                return -1;
+            }
 
-            lseek(fd, -toread-n, SEEK_CUR);
-            write(fd, buffer, toread);
+            if (lseek(fd, -toread-n, SEEK_CUR) == -1 || write(fd, buffer, toread) == -1) {
+                return -1;
+            }
+            
             unread -= toread;
         }
         
         /* Escribe los n caracteres */
-        lseek(fd, -n, SEEK_END);
-        write(fd, nbuffer, n);
+        if (lseek(fd, -n, SEEK_END) == -1 || write(fd, nbuffer, n) == -1) {
+            free(nbuffer);
+            free(buffer);
+            close(fd);
+            return -1;
+        }
     }
         
     free(nbuffer);

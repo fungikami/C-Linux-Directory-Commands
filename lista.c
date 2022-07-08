@@ -34,9 +34,7 @@ struct Nodo* crear_lista() {
 int insertar_ordenado_lista(struct Nodo** cabeza, Par* palabras) {
     int len_palabra = strlen(palabras->x);
     struct Nodo* nuevo = (struct Nodo*)malloc(sizeof(struct Nodo));
-    if (!nuevo) {
-        return -1;
-    }
+    if (!nuevo) return -1;
 
     /* Crea nuevo nodo */
     nuevo->dato = palabras;
@@ -80,9 +78,7 @@ void print_lista(struct Nodo* nodo) {
     printf("[");
     while (nodo) {
         print_par(nodo->dato);
-        if (nodo->next) {
-            printf(", ");
-        }
+        if (nodo->next) printf(", ");
         nodo = nodo->next;
     }
     printf("]\n");

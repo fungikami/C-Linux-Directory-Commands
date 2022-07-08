@@ -564,3 +564,70 @@ int main(int argc, char **argv) {
     
     return 0;
 }
+
+int repla_aux(char *archivo, void *args) {
+    struct Nodo* cabeza = (struct Nodo*) args;
+    char ch, *temp_archivo = temp_name(10);   
+    int ptr, write_ptr, len;
+
+    struct stat st;
+    if (stat(archivo, &st) == -1) return -1;
+
+    /* Abrir el archivo a leer */
+    ptr = open(archivo, O_RDONLY);
+    if (ptr == -1) return -1;
+    
+    /* Abrir el archivo temporal a escribir */
+    write_ptr = open(temp_archivo, O_WRONLY | O_CREAT, st.st_mode);
+    if (write_ptr == -1) return -1;
+
+    /* Revisamos por cada coincidencia de char del archivo a reemplazar */
+    len = read(ptr, &ch, 1);
+    while (ch != EOF && len != 0) {   
+        /* Revisamos por cada palabra de la lista */
+        struct Nodo* actual = cabeza;
+        long int pos = lseek(ptr, 0, SEEK_CUR) - 1;
+        while (actual != NULL) {
+
+            /* Itera mientras coincidan la palabra de la lista y el texto*/
+            int i = 0;
+            while (ch == actual->dato->x[i]) {
+                if ((len = read(ptr, &ch, 1)) == 0) break;
+                i++;
+            }
+
+            /* Si coincide toda la palabra, se imprime */
+            if (i == actual->len) {
+                write(write_ptr, actual->dato->y, strlen(actual->dato->y));
+                break;
+            }
+
+            /* En cambio, se revisa con la siguiente palabra de la lista */
+            actual = actual->next;
+            lseek(ptr, pos, SEEK_SET);
+            if ((len = read(ptr, &ch, 1)) == 0) break;
+        }
+
+        /* Si no coincide ninguna palabra de la lista, se imprime el char */
+        if (!actual) {
+            write(write_ptr, &ch, 1);
+            if ((len = read(ptr, &ch, 1)) == 0) break;
+        } 
+    }
+
+    close(ptr);
+    close(write_ptr);
+
+    /* Renombra el archivo temporal, si no se puede, se elimina */
+    if (rename(temp_archivo, archivo) != 0) {
+        free(temp_archivo);
+        remove(temp_archivo);
+        return -1;
+    }
+
+    /* Copiar permisos del archivo original y liberar nombre del archivo temporal */
+    chmod(archivo, st.st_mode);
+    free(temp_archivo);
+
+    return 0;
+}

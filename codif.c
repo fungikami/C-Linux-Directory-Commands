@@ -1,6 +1,6 @@
 /**
  * codif.c
- * Implementación del comando codif, en la cual cada archivo regular, 
+ * Implementación del comando codif, en la cual para cada archivo regular 
  * que se encuentre en el directorio raíz, se invierte su contenido.
  *
  * Autor: Ka Fung (18-10492)
@@ -17,16 +17,15 @@
 int codif_aux(char *path, void *args);
 
 /**
- * Función que llama la función auxiliar codif_aux
- * para invertir el contenido de los archivos de un directorio raíz.
+ * Función que llama la función auxiliar codif_aux para 
+ * invertir el contenido de los archivos de un directorio raíz.
  * 
  * Parámetros:
  *      dir_raiz: ruta del directorio raíz 
  */
 void codif(char *dir_raiz) {
-    if (traverse_dir(dir_raiz, codif_aux, NULL, 0) == -1) {
+    if (traverse_dir(dir_raiz, codif_aux, NULL, 0) == -1)
         fprintf(stderr, "Error al ejecutar codif.\n");
-    }
 }
 
 /**
@@ -76,12 +75,20 @@ int codif_aux(char *path, void *args) {
         rpos = -toread-lpos;
         
         /* Lee el bloque más izquierdo a intercambiar */
-        lseek(fd, lpos, SEEK_SET);
-        read(fd, lbuffer, toread);
+        if (lseek(fd, lpos, SEEK_SET) == -1 || read(fd, lbuffer, toread) == -1) {
+            free(lbuffer);
+            free(rbuffer);
+            close(fd);
+            return -1;
+        }
 
         /* Lee el bloque más derecho a intercambiar */
-        lseek(fd, rpos, SEEK_END);
-        read(fd, rbuffer, toread);
+        if (lseek(fd, rpos, SEEK_END) == -1 || read(fd, rbuffer, toread) == -1) {
+            free(lbuffer);
+            free(rbuffer);
+            close(fd);
+            return -1;
+        }
 
         /* Intercambia el contenido de los bloques */
         for (i = 0; i < toread; i++) {
@@ -91,17 +98,25 @@ int codif_aux(char *path, void *args) {
         }
 
         /* Escribe el bloque intercambiado más izquierdo */
-        lseek(fd, lpos, SEEK_SET);
-        write(fd, lbuffer, toread);
+        if (lseek(fd, lpos, SEEK_SET) == -1 || write(fd, lbuffer, toread) == -1) {
+            free(lbuffer);
+            free(rbuffer);
+            close(fd);
+            return -1;
+        }
 
         /* Escribe el bloque intercambiado más derecho */
-        lseek(fd, rpos, SEEK_END);
-        write(fd, rbuffer, toread);
+        if (lseek(fd, rpos, SEEK_END) == -1 || write(fd, rbuffer, toread) == -1) {
+            free(lbuffer);
+            free(rbuffer);
+            close(fd);
+            return -1;
+        }
         
         unread -= toread;
     }
 
-    /* Cierra el archivoy y libera memoria */
+    /* Cierra el archivo y libera memoria */
     free(lbuffer);
     free(rbuffer);
     close(fd);

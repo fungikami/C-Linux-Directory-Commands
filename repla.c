@@ -12,13 +12,15 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <fcntl.h>
+#include <unistd.h>
 #include <sys/stat.h>
 #include <time.h>
 #include "lista.h"
 #include "utilidades.h"
 
 int repla_aux(char *archivo, void *args);
-char *random_string(int length);
+char *temp_name(int length);
 struct Nodo *extraer_palabras(char *archivo);
 
 /**
@@ -36,9 +38,8 @@ void repla(char *dir_raiz, char *file) {
         return;
     }
 
-    if (traverse_dir(dir_raiz, repla_aux, lista, 0) == -1) {
+    if (traverse_dir(dir_raiz, repla_aux, lista, 0) == -1) 
         fprintf(stderr, "Error al ejecutar repla.\n");
-    }
     
     liberar_lista(lista);
 }
@@ -52,73 +53,69 @@ void repla(char *dir_raiz, char *file) {
  * Retorno:
  *      - 0 si se pudo reemplazar, -1 si no se pudo reemplazar
  */
-int repla_aux(char* archivo, void *args) {
+int repla_aux(char *archivo, void *args) {
     struct Nodo* cabeza = (struct Nodo*) args;
-    char ch;
-    char* temp_archivo = random_string(10);   
-    FILE *ptr, *write_ptr;
+    char ch, *temp_archivo = temp_name(10);   
+    int ptr, write_ptr, len;
 
     struct stat st;
     if (stat(archivo, &st) == -1) return -1;
 
     /* Abrir el archivo a leer */
-    ptr = fopen(archivo, "r");
-    if (!ptr) return -1;
+    ptr = open(archivo, O_RDONLY);
+    if (ptr == -1) return -1;
     
     /* Abrir el archivo temporal a escribir */
-    write_ptr = fopen(temp_archivo, "w");
-    if (!write_ptr) {
-        free(temp_archivo);
-        fclose(ptr);
-        return -1;
-    }
+    write_ptr = open(temp_archivo, O_WRONLY | O_CREAT, st.st_mode);
+    if (write_ptr == -1) return -1;
 
     /* Revisamos por cada coincidencia de char del archivo a reemplazar */
-    ch = fgetc(ptr);
-    while (ch != EOF) {   
+    while ((len = read(ptr, &ch, 1)) > 0 && ch != EOF) {  
+
         /* Revisamos por cada palabra de la lista */
         struct Nodo* actual = cabeza;
-        long int pos = ftell(ptr) - 1;
+        long int pos = lseek(ptr, 0, SEEK_CUR) - 1;
         while (actual != NULL) {
 
             /* Itera mientras coincidan la palabra de la lista y el texto*/
             int i = 0;
             while (ch == actual->dato->x[i]) {
-                ch = fgetc(ptr);
+                if ((len = read(ptr, &ch, 1)) == 0) break;
                 i++;
             }
 
             /* Si coincide toda la palabra, se imprime */
             if (i == actual->len) {
-                fprintf(write_ptr, "%s", actual->dato->y);
+                write(write_ptr, actual->dato->y, strlen(actual->dato->y));
+                lseek(ptr, pos + i, SEEK_SET);
                 break;
             }
 
-            /* En cambio, se revisa con la siguiente palabra de la lista*/
+            /* En cambio, se revisa con la siguiente palabra de la lista */
             actual = actual->next;
-            fseek(ptr, pos, SEEK_SET);
-            ch = fgetc(ptr);
+            lseek(ptr, pos, SEEK_SET);
+            if ((len = read(ptr, &ch, 1)) == 0) break;
         }
 
         /* Si no coincide ninguna palabra de la lista, se imprime el char */
-        if (!actual) {
-            fprintf(write_ptr, "%c", ch);
-            ch = fgetc(ptr);
-        } 
+        if (!actual)
+            write(write_ptr, &ch, 1);
     }
 
-    fclose(ptr);
-    fclose(write_ptr);
+    close(ptr);
+    close(write_ptr);
 
-    /* Renombra el archivo temporal */
+    /* Renombra el archivo temporal, si no se puede, se elimina */
     if (rename(temp_archivo, archivo) != 0) {
         free(temp_archivo);
         remove(temp_archivo);
         return -1;
     }
 
-    free(temp_archivo);
+    /* Liberar nombre del archivo temporal */
     chmod(archivo, st.st_mode);
+    free(temp_archivo);
+
     return 0;
 }
 
@@ -126,8 +123,10 @@ int repla_aux(char* archivo, void *args) {
  * Genera un string aleatorio de longitud dada.
  * Parametros:
  *      - length: longitud del string 
+ * Retorno:
+ *      - string aleatorio
  */
-char *random_string(int length) {
+char *temp_name(int length) {
     int i;
     
     char *string = malloc(sizeof(char) * (length + 11));

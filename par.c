@@ -19,9 +19,7 @@
  */
 Par* crear_par(char* x, char* y) {
     Par* par = (Par*)malloc(sizeof(Par));
-    if(!par) {
-        return NULL;
-    }
+    if(!par) return NULL;
 
     par->x = x;
     par->y = y;
