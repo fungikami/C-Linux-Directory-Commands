@@ -17,7 +17,7 @@
 #include <sys/stat.h>
 #include <time.h>
 #include "lista.h"
-#include "utilidades.h"
+#include "misc.h"
 
 int repla_aux(char *archivo, void *args);
 char *temp_name(int length);

@@ -31,7 +31,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <sys/stat.h>
-#include "utilidades.h"
+#include "misc.h"
 #include "finds.h"
 #include "repla.h"
 #include "wc.h"

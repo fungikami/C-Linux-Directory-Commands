@@ -15,7 +15,7 @@
 #include <stdlib.h>
 #include <fcntl.h>
 #include <unistd.h>
-#include "utilidades.h"
+#include "misc.h"
 
 int find_aux(char *path, void *args);
 int ifind_aux(char *path, void *args);

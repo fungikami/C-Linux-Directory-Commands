@@ -1,5 +1,6 @@
 /**
- * utilidades.c
+ * misc.c
+ * Misceláneo
  * Implementación de diversas funciones que se harán uso durnate el programa.
  * 
  * Autor: Ka Fung (18-10492)
@@ -15,7 +16,7 @@
 #include <unistd.h>
 #include <dirent.h>
 #include <sys/stat.h>
-#include "utilidades.h"
+#include "misc.h"
 
 /**
  * Función que remueve los comillas de una cadena.

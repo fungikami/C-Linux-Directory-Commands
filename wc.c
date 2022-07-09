@@ -14,7 +14,7 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include <dirent.h>
-#include "utilidades.h"
+#include "misc.h"
 
 int wc_aux(char *path, int *nlines, int *nchars);
 int count_lines_chars(char *path, int *lines, int *chars);

@@ -1,12 +1,12 @@
 /**
- * utilidades.h
+ * misc.h
  * 
  * Autor: Ka Fung (18-10492)
  * Fecha: 08/07/2020 
  */
 
-#ifndef __UTILIDADES_H__
-    #define __UTILIDADES_H__
+#ifndef __MISC_H__
+    #define __MISC_H__
 
     void remove_quotes(char *str);
     char *get_line();
