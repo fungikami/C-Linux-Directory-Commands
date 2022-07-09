@@ -168,7 +168,6 @@ int is_reg_file(char *path) {
         fprintf(stderr, "No se pudo aplicar stat sobre el archivo %s\n", path);
         return -1;
     }
-
     return S_ISREG(st.st_mode);
 }  
 
@@ -231,7 +230,6 @@ int traverse_dir(char* path, int (*fun) (char *, void *), void *argum, int actio
                 }
             }
         }
-
         free(new_path);
     }
 

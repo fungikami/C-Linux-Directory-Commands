@@ -112,10 +112,9 @@ void cfind(char *dir_raiz, char *cadena1, char *cadena2) {
  */
 int cfind_aux(char *path, void *args) {
     char **string = (char **) args;
-    char *string1 = string[0];
-    char *string2 = string[1];
+    char *string1 = string[0], *string2 = string[1];
     char buffer[BUFSIZ];
-    int fd, len, cur_char, i;
+    int fd, len, len_str, cur_char, i;
 
     /* Verifica si path contiene el string */
     if (!strstr(path, string1)) return 0;
@@ -129,18 +128,20 @@ int cfind_aux(char *path, void *args) {
 
     /* Verifica que el contenido del archivo tenga la cadena string2 */
     cur_char = 0;
+    len_str = strlen(string2);
     while ((len = read(fd, buffer, BUFSIZ)) > 0) {
 
-        /* Por cada char del buffer, verifica si existe coincidencia de char */
+        /* Verifica por cada char si existe coincidencia */
         for (i = 0; i < len; i++) {
             if (buffer[i] == string2[cur_char]) {
                 cur_char++;
-                if (cur_char == strlen(string2)) {
+                if (cur_char == len_str) {
                     printf("%s\n", path);
                     close(fd);
                     return 1;
                 }
             } else {
+                if (cur_char) i--; 
                 cur_char = 0;
             }
         }

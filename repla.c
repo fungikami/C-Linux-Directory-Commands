@@ -113,7 +113,7 @@ int repla_aux(char *archivo, void *args) {
     }
 
     /* Liberar nombre del archivo temporal */
-    chmod(archivo, st.st_mode);
+    /* chmod(archivo, st.st_mode); */
     free(temp_archivo);
 
     return 0;

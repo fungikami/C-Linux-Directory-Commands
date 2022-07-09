@@ -11,11 +11,14 @@
 #include "lista.h"
 #include "par.h"
 
+/**
+ * Función que crea una lista doblemente enlazada de pares de palabras.
+ * Retorno:
+ *    - Cabeza de la lista doblemente enlazada de pares de palabras.
+ */
 struct Nodo* crear_lista() {
     struct Nodo *cabeza = (struct Nodo*)malloc(sizeof(struct Nodo));
-    if (!cabeza) {
-        return NULL;
-    }
+    if (!cabeza) return NULL;
 
     cabeza->dato = NULL;
     cabeza->prev = NULL;
@@ -30,6 +33,8 @@ struct Nodo* crear_lista() {
  * Parametros:
  *      - cabeza: cabeza de la lista
  *      - palabras: palabras a insertar
+ * Retorno:
+ *      - 0 si se pudo insertar, -1 si no se pudo insertar
  */ 
 int insertar_ordenado_lista(struct Nodo** cabeza, Par* palabras) {
     int len_palabra = strlen(palabras->x);
@@ -78,7 +83,9 @@ void print_lista(struct Nodo* nodo) {
     printf("[");
     while (nodo) {
         print_par(nodo->dato);
-        if (nodo->next) printf(", ");
+        if (nodo->next) {
+            printf(", ");
+        }
         nodo = nodo->next;
     }
     printf("]\n");
